@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'JBMusic';
+    src: url("/assets/fonts/JBMusic-Regular.otf") format('opentype');
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url("/assets/fonts/AnonymousPro-Regular.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url("/assets/fonts/AnonymousPro-Italic.ttf") format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url("/assets/fonts/AnonymousPro-Bold.ttf") format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url("/assets/fonts/AnonymousPro-BoldItalic.ttf") format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
