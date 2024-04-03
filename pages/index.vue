@@ -42,16 +42,18 @@ const displayList = computed(() => {
   });
 });
 
-apiRequests.getMainListInfo()
-  .then(response => {
-    mainListInfo.value = response.list.sort((song1: { name: string; }, song2: { name: string; }) => {
-      if (song1.name < song2.name) return -1;
-      if (song1.name == song2.name) return 0;
-      if (song1.name > song2.name) return 1;
+if (process.client) {
+  apiRequests.getMainListInfo()
+    .then(response => {
+      mainListInfo.value = response.list.sort((song1: { name: string; }, song2: { name: string; }) => {
+        if (song1.name < song2.name) return -1;
+        if (song1.name == song2.name) return 0;
+        if (song1.name > song2.name) return 1;
+      });
     });
-  });
-apiRequests.getMainList()
-  .then(response => {
-    mainListData.value = response.list;
-  });
+  apiRequests.getMainList()
+    .then(response => {
+      mainListData.value = response.list;
+    });
+}
 </script>

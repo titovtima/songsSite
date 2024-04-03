@@ -1,18 +1,16 @@
-import {integer} from "vscode-languageserver-types";
-
 const apiRequests = {
     apiUrl: 'https://test.songs.titovtima.ru/api/v1',
     token: null,
 
-    baseRequest: async (url: string, config: RequestInit = {}) => {
-        let response: Response;
+    baseRequest: async (url: string, config: any) => {
+        let response: any;
         try {
-            response = await fetch(apiRequests.apiUrl + url, config);
+            response = await useFetch(apiRequests.apiUrl + url, config);
         } catch (err) {
             return new Promise((resolve, reject) => reject('Fetch error'));
         }
-        if (response.ok) {
-            return response.json();
+        if (response.status.value == 'success') {
+            return response.data.value;
         }
         return new Promise((resolve, reject) => reject(response));
     },
@@ -22,7 +20,7 @@ const apiRequests = {
             method: 'POST',
             body: JSON.stringify({username: username, password: password})
         });
-        result.then(response => {
+        result.then((response: any) => {
             apiRequests.token = response.token;
             localStorage.setItem('username', username);
             localStorage.setItem('password', password);
@@ -30,15 +28,16 @@ const apiRequests = {
     },
 
     authorizedRequest: async (url: string, config: RequestInit = {}) => {
-        if (parseJwt(apiRequests.token)['created_at'] < new Date()) {
+        if (process.server) return new Promise((resolve, reject) => reject({status: 401}));
+        if (apiRequests.token == null || parseJwt(apiRequests.token)['exp'] < new Date()) {
             let username = localStorage.getItem('username');
             let password = localStorage.getItem('password');
             if (username == null || password == null)
-                return new Promise((resolve, reject) => reject({status: 401}))
+                return new Promise((resolve, reject) => reject({status: 401}));
             try {
-                await apiRequests.getJWT(username, password)
+                await apiRequests.getJWT(username, password);
             } catch (e) {
-                return new Promise((resolve, reject) => reject({status: 401}))
+                return new Promise((resolve, reject) => reject({status: 401}));
             }
         }
         let newConfig: any = config;
@@ -49,27 +48,31 @@ const apiRequests = {
     },
 
     optionallyAuthorizedRequest: async (url: string, config: RequestInit = {}) => {
-        try {
-            return await apiRequests.authorizedRequest(url, config);
-        } catch (e) {
+        if (process.client) {
+            try {
+                return await apiRequests.authorizedRequest(url, config);
+            } catch (e) {
+                return apiRequests.baseRequest(url, config);
+            }
+        } else {
             return apiRequests.baseRequest(url, config);
         }
     },
 
-    getSong: async (songId: integer)=> {
+    getSong: async (songId: number)=> {
         return apiRequests.optionallyAuthorizedRequest('/song/' + songId);
     },
 
     getMainListInfo: async () => {
-        return apiRequests.optionallyAuthorizedRequest('/songs/main_list/info')
+        return apiRequests.optionallyAuthorizedRequest('/songs/main_list/info');
     },
 
     getMainList: async () => {
-        return apiRequests.optionallyAuthorizedRequest('/songs/main_list')
+        return apiRequests.optionallyAuthorizedRequest('/songs/main_list');
     },
 
     getAllSongsInfo: async () => {
-        return apiRequests.optionallyAuthorizedRequest('/songs/info')
+        return apiRequests.optionallyAuthorizedRequest('/songs/info');
     },
 };
 

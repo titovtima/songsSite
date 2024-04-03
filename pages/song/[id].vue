@@ -50,11 +50,10 @@ const viewParts = computed(() => {
   else return toValue(chordsTextParts);
 });
 
-apiRequests.getSong(Number(route.params.id))
-  .then(data => {
-    useHead({title: data.name});
-    songData.value = data;
-  });
+// let apiRequests = useAPI();
+songData.value = await apiRequests.getSong(Number(route.params.id));
+useHead({title: songData.value.name});
+
 
 onMounted(() => {
   textTypeButton.value.onclick = () => {
