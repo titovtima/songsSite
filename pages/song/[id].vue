@@ -1,6 +1,7 @@
 <template>
-  <div class="overflow-y-auto h-[100vh]">
-    <h1 class="text-center text-6xl overflow-x-auto p-5">
+  <div class="overflow-y-auto h-[100vh] p-5">
+    <img src="~/assets/home.png" alt="на главную" @click="router.push('/')" class="home-button"/>
+    <h1 class="header">
       {{ songData.name ? songData.name : '' }}
     </h1>
     <div>
@@ -16,9 +17,12 @@
         </button>
       </div>
     </div>
-    <div class="parts-list">
-      <SongPart v-for="part in viewParts" :data="part"/>
+    <div class="parts-list overflow-x-auto">
+      <div class="overflow-x-hidden min-w-min">
+        <SongPart v-for="part in viewParts" :data="part"/>
+      </div>
     </div>
+    <pre class="p-2">{{ toValue(songData).extra }}</pre>
   </div>
 </template>
 
@@ -27,6 +31,7 @@ import apiRequests from "~/utils/apiRequests";
 import {toValue} from "vue";
 
 const route = useRoute();
+const router = useRouter();
 
 const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
@@ -43,7 +48,7 @@ const viewParts = computed(() => {
   if (view.value == 'Text') return toValue(textParts);
   else if (view.value == 'Chords') return toValue(chordsParts);
   else return toValue(chordsTextParts);
-})
+});
 
 apiRequests.getSong(Number(route.params.id))
   .then(data => {
@@ -75,5 +80,23 @@ onMounted(() => {
 
 .type-button-wrap {
   @apply w-1/3 inline-block text-center
+}
+
+.home-button {
+  @apply h-20;
+}
+
+.header {
+  @apply text-center text-6xl overflow-x-auto p-5;
+}
+
+@media (aspect-ratio < 1.2) {
+  .home-button {
+    @apply h-12;
+  }
+
+  .header {
+    @apply text-2xl;
+  }
 }
 </style>

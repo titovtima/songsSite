@@ -1,5 +1,5 @@
 <template>
-  <div class="m-5 bg-white p-3">
+  <div class="my-5 bg-white p-3 w-full min-w-min">
     <div class="text-xl border-b border-black font-bold" v-if="data.name">
       {{ data.name }}
     </div>
