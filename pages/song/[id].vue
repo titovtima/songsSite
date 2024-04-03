@@ -6,13 +6,18 @@
     </h1>
     <div>
       <div class="type-button-wrap">
-        <button class="type-button" ref="textTypeButton" :class="{ active: view === 'Text' }">Текст</button>
+        <button class="type-button" ref="textTypeButton"
+                :class="{ active: view == 'Text', hidden: toValue(textParts).length == 0 }">Текст
+        </button>
       </div>
       <div class="type-button-wrap">
-        <button class="type-button" ref="chordsTypeButton" :class="{ active: view === 'Chords' }">Аккорды</button>
+        <button class="type-button" ref="chordsTypeButton"
+                :class="{ active: view == 'Chords', hidden: toValue(chordsParts).length == 0 }">Аккорды
+        </button>
       </div>
       <div class="type-button-wrap">
-        <button class="type-button" ref="chordsTextTypeButton" :class="{ active: view === 'ChordsText' }">
+        <button class="type-button hidden" ref="chordsTextTypeButton"
+                :class="{ active: view == 'ChordsText', hidden: toValue(chordsTextParts).length == 0 }">
           Аккорды в тексте
         </button>
       </div>
@@ -39,11 +44,10 @@ const chordsTextTypeButton: any = ref(null);
 
 const songData: any = ref({parts: []});
 const view = ref('Text');
-const textParts = computed(() => songData.value.parts.filter((part: { type: any; }) => part.type == 'Text'));
-const chordsParts = computed(() => songData.value.parts.filter((part: { type: any; }) => part.type == 'Chords'));
-const chordsTextParts = computed(() => songData.value.parts.filter((part: {
-  type: any;
-}) => part.type == 'ChordsText'));
+const textParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Text'));
+const chordsParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Chords'));
+const chordsTextParts = computed(() => songData.value.parts
+  .filter((part: { type: string; }) => part.type == 'ChordsText'));
 const viewParts = computed(() => {
   if (view.value == 'Text') return toValue(textParts);
   else if (view.value == 'Chords') return toValue(chordsParts);
@@ -76,6 +80,10 @@ onMounted(() => {
 <style scoped>
 .type-button {
   @apply p-3 bg-white inline-block w-[90%]
+}
+
+.type-button.hidden {
+  display: none;
 }
 
 .type-button.active {
