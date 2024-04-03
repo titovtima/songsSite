@@ -50,10 +50,15 @@ const viewParts = computed(() => {
   else return toValue(chordsTextParts);
 });
 
-// let apiRequests = useAPI();
-songData.value = await apiRequests.getSong(Number(route.params.id));
+try {
+  songData.value = await apiRequests.getSong(Number(route.params.id));
+} catch (e) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Песня не найдена'
+  });
+}
 useHead({title: songData.value.name});
-
 
 onMounted(() => {
   textTypeButton.value.onclick = () => {
