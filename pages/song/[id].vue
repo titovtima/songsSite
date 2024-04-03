@@ -16,7 +16,7 @@
         </button>
       </div>
       <div class="type-button-wrap">
-        <button class="type-button hidden" ref="chordsTextTypeButton"
+        <button class="type-button" ref="chordsTextTypeButton"
                 :class="{ active: view == 'ChordsText', hidden: toValue(chordsTextParts).length == 0 }">
           Аккорды в тексте
         </button>
