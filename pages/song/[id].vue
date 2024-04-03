@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-y-auto h-[100vh] p-5">
+  <div class="overflow-y-auto h-[100vh] p-[20px]">
     <img src="/home.png" alt="на главную" @click="router.push('/')" class="home-button"/>
     <h1 class="header">
       {{ songData.name ? songData.name : '' }}
@@ -27,7 +27,7 @@
         <SongPart v-for="part in viewParts" :data="part"/>
       </div>
     </div>
-    <pre class="p-2">{{ toValue(songData).extra }}</pre>
+    <pre class="p-2 w-full overflow-x-auto">{{ toValue(songData).extra }}</pre>
   </div>
 </template>
 
@@ -95,7 +95,7 @@ onMounted(() => {
 }
 
 .home-button {
-  @apply h-20;
+  @apply h-[80px];
 }
 
 .header {
@@ -104,7 +104,7 @@ onMounted(() => {
 
 @media (aspect-ratio < 1.2) {
   .home-button {
-    @apply h-12;
+    @apply h-[50px];
   }
 
   .header {

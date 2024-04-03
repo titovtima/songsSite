@@ -1,6 +1,7 @@
 <template>
   <YandexMetrika />
   <NuxtPage />
+  <ChangeFontSize class="fixed bottom-[5px] right-[5px]" />
 </template>
 
 <script setup>

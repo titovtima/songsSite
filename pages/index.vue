@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-y-auto h-[100vh] p-5">
+  <div class="overflow-y-auto h-[100vh] p-[20px]">
     <input type="text" placeholder="Поиск песни по словам" ref="searchInput" class="w-full border border-gray-400 p-1">
     <SongList :list="toValue(displayList)" class="mt-5"/>
   </div>
