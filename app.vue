@@ -6,6 +6,8 @@
 <script setup>
 // localStorage.removeItem('username');
 // localStorage.removeItem('password');
+
+useHead({ link: [{href: '/angel.jpg', rel: 'icon'}] });
 </script>
 
 <style>

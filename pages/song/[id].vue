@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-y-auto h-[100vh] p-5">
-    <img src="~/assets/home.png" alt="на главную" @click="router.push('/')" class="home-button"/>
+    <img src="/home.png" alt="на главную" @click="router.push('/')" class="home-button"/>
     <h1 class="header">
       {{ songData.name ? songData.name : '' }}
     </h1>
