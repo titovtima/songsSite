@@ -1,9 +1,7 @@
 <template>
   <YandexMetrika />
   <div class="overflow-y-auto h-[100vh] p-[20px]">
-    <div class="overflow-hidden">
-      <div class="inline-block float-right m-[5px] cursor-pointer" @click="showSettingsModal = !showSettingsModal">настройки</div>
-    </div>
+    <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
   </div>
   <Settings v-model:show="showSettingsModal"/>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <img src="/home.png" alt="на главную" @click="router.push('/')" class="home-button"/>
     <h1 class="header">
       {{ songData.name ? songData.name : '' }}
     </h1>
@@ -94,19 +93,11 @@ onMounted(() => {
   @apply w-1/3 inline-block text-center
 }
 
-.home-button {
-  @apply h-[80px];
-}
-
 .header {
   @apply text-center text-6xl overflow-x-auto p-5;
 }
 
 @media (aspect-ratio < 1.2) {
-  .home-button {
-    @apply h-[50px];
-  }
-
   .header {
     @apply text-2xl;
   }
