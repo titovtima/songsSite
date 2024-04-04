@@ -26,11 +26,14 @@ if (process.client) {
       fontSize: parseInt(getComputedStyle(html, '').fontSize)
     }
   }
+  watch(() => settings.value.fontSize, () => {
+    useHead({ htmlAttrs: { style: `font-size: ${settings.value.fontSize}px` }});
+  }, { immediate: true });
 }
 
-watch(() => settings.value.fontSize, () => {
+if (settings.value) {
   useHead({ htmlAttrs: { style: `font-size: ${settings.value.fontSize}px` }});
-}, { immediate: true });
+}
 
 let oncancel = () => {};
 let onconfirm = () => {};
