@@ -39,7 +39,7 @@ button {
 }
 
 .show-modal-enter-active, .show-modal-leave-active {
-  transition: all 1s;
+  transition: all 0.3s;
 }
 
 .show-modal-enter-from, .show-modal-leave-to {
