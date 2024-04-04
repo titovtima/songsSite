@@ -11,29 +11,39 @@ const changeFontSize: any = ref(null);
 const modal: any = ref(null);
 
 const props = defineProps(['show']);
-const emits = defineEmits(['update:show']);
+defineEmits(['update:show']);
+
+// if (process.client) {
+//   document.cookie = "settings=kds; path=/; max-age=-1";
+// }
+
+const settings: any = useCookie('settings', { path: '/' });
+
+if (process.client) {
+  let html = document.documentElement;
+  if (!settings.value) {
+    settings.value = {
+      fontSize: parseInt(getComputedStyle(html, '').fontSize)
+    }
+  }
+}
+
+watch(() => settings.value.fontSize, () => {
+  useHead({ htmlAttrs: { style: `font-size: ${settings.value.fontSize}px` }});
+}, { immediate: true });
 
 let oncancel = () => {};
 let onconfirm = () => {};
 
 if (process.client) {
-  const html = document.documentElement;
-  let startFontSize = parseInt(getComputedStyle(html, '').fontSize);
-  watch(() => props.show, () => {
-    if (props.show)
-      startFontSize = parseInt(getComputedStyle(html, '').fontSize);
-  });
+  let savedSettings = settings.value;
 
   oncancel = () => {
-    console.log('oncancel');
-    html.style.fontSize = startFontSize + 'px';
+    settings.value = savedSettings;
   }
 
   onconfirm = () => {
-    console.log('onconfirm');
-    localStorage.setItem('settings', JSON.stringify({
-      fontSize: parseInt(getComputedStyle(html, '').fontSize),
-    }));
+    savedSettings = settings.value;
   }
 }
 </script>

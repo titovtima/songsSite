@@ -7,26 +7,13 @@
   <Settings v-model:show="showSettingsModal"/>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // localStorage.removeItem('username');
 // localStorage.removeItem('password');
 
 useHead({ link: [{href: '/angel.jpg', rel: 'icon'}] });
 
 const showSettingsModal = ref(false);
-
-if (process.client) {
-  let html = document.documentElement;
-  let settings = localStorage.getItem('settings');
-  if (settings)
-    settings = JSON.parse(settings);
-  else {
-    settings = {
-      fontSize: parseInt(getComputedStyle(html, '').fontSize)
-    }
-  }
-  html.style.fontSize = settings.fontSize + 'px';
-}
 </script>
 
 <style>

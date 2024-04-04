@@ -18,17 +18,16 @@ const {isMobile} = useDevice();
 const plus: any = ref(null);
 const minus: any = ref(null);
 
+const settings: any = useCookie('settings', { path: '/' });
+
 const maxFontSize = isMobile ? 30 : 48;
 if (process.client) {
-  const html = document.documentElement;
-
   onMounted(() => {
     plus.value.onclick = () => {
-      html.style.fontSize =
-        Math.min(parseInt(getComputedStyle(html, '').fontSize) + 2, maxFontSize) + 'px';
+      settings.value.fontSize = Math.min(settings.value.fontSize + 2, maxFontSize);
     }
     minus.value.onclick = () => {
-      html.style.fontSize = Math.max(parseInt(getComputedStyle(html, '').fontSize) - 2, 6) + 'px';
+      settings.value.fontSize = Math.max(settings.value.fontSize - 2, 6);
     }
   });
 }
