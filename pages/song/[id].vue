@@ -94,7 +94,7 @@ onMounted(() => {
 }
 
 .header {
-  @apply text-center text-6xl overflow-x-auto p-5;
+  @apply text-center text-4xl overflow-x-auto p-5;
 }
 
 @media (aspect-ratio < 1.2) {
