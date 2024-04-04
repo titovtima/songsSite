@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3 class="inline-block w-[350px]">Размер шрифта</h3>
     <img ref="plus" src="/plus-button.png" alt="увеличить"/>
     <img ref="minus" src="/minus-button.png" alt="уменьшить"/>
   </div>
@@ -29,6 +30,6 @@ if (process.client) {
 
 <style scoped>
 img {
-  @apply m-[15px] w-[50px];
+  @apply m-[15px] w-[50px] inline-block cursor-pointer;
 }
 </style>
