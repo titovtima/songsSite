@@ -9,7 +9,7 @@
 import apiRequests from "~/utils/apiRequests";
 import {toValue} from "vue";
 
-useHead({title: 'Песни Церкви "Источник Жизни"'});
+useHead({title: 'Песни церкви «Источник жизни»'});
 
 const searchInput: any = ref(null);
 const searchValue = ref('');
