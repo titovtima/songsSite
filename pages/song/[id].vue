@@ -21,9 +21,10 @@
         </button>
       </div>
     </div>
+    <KeySwitch v-if="view != 'Text' && songData.key != null" :original="songData.key" v-model:key-shift="keyShift" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
-        <SongPart v-for="part in viewParts" :data="part"/>
+        <SongPart v-for="part in viewParts" :data="part" v-model:key-shift="keyShift" :general-key="songData.key"/>
       </div>
     </div>
     <pre class="p-2 w-full overflow-x-auto">{{ toValue(songData).extra }}</pre>
@@ -35,7 +36,6 @@ import apiRequests from "~/utils/apiRequests";
 import {toValue} from "vue";
 
 const route = useRoute();
-const router = useRouter();
 
 const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
@@ -43,6 +43,7 @@ const chordsTextTypeButton: any = ref(null);
 
 const songData: any = ref({parts: []});
 const view = ref('Text');
+const keyShift = ref(0);
 const textParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Text'));
 const chordsParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Chords'));
 const chordsTextParts = computed(() => songData.value.parts
@@ -78,7 +79,7 @@ onMounted(() => {
 
 <style scoped>
 .type-button {
-  @apply p-3 bg-white inline-block w-[90%]
+  @apply p-3 bg-white inline-block w-[90%];
 }
 
 .type-button.hidden {
@@ -86,11 +87,11 @@ onMounted(() => {
 }
 
 .type-button.active {
-  @apply border-black border font-bold
+  @apply border-black border font-bold;
 }
 
 .type-button-wrap {
-  @apply w-1/3 inline-block text-center
+  @apply w-1/3 inline-block text-center;
 }
 
 .header {
