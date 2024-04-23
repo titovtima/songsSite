@@ -33,7 +33,6 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
-import {toValue} from "vue";
 
 const route = useRoute();
 
@@ -63,6 +62,15 @@ try {
   });
 }
 useHead({title: songData.value.name});
+
+definePageMeta({
+  middleware: (to, from) => {
+    const navState: any = useState('navigation');
+    if (from.name == 'songs_list-id' && to.name == 'song-id') {
+      navState.value.listId = Number(from.params.id);
+    }
+  }
+});
 
 onMounted(() => {
   textTypeButton.value.onclick = () => {

@@ -2,7 +2,7 @@
   <div>
     <h1 class="header">{{ listInfo ? listInfo.name : 'Список песен' }}</h1>
     <SongSearch :search-list="toValue(songsData)" @display-list="(list) => searchedList = list"/>
-    <SongList :list="toValue(displayList)" class="mt-5"/>
+    <SongList :list="toValue(displayList)" :nav-list="route.params.id" class="mt-5"/>
   </div>
 </template>
 
