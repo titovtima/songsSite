@@ -13,6 +13,8 @@ const router = useRouter();
 
 const lists: any = ref([]);
 
+useHead({title: 'Песни церкви «Источник жизни» | Списки песен'});
+
 apiRequests.getAllListsInfo().then(result => lists.value = result.list);
 
 function clickLink(listId: number) {
