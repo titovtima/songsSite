@@ -86,6 +86,10 @@ const apiRequests = {
     getListData: async (listId: number) => {
         return apiRequests.optionallyAuthorizedRequest('/songs_list/' + listId);
     },
+
+    getAllListsInfo: async () => {
+        return apiRequests.optionallyAuthorizedRequest('/songs_lists/info');
+    }
 };
 
 export default apiRequests;
