@@ -27,7 +27,7 @@
         <SongPart v-for="part in viewParts" :data="part" v-model:key-shift="keyShift" :general-key="songData.key"/>
       </div>
     </div>
-    <pre class="p-2 w-full overflow-x-auto">{{ toValue(songData).extra }}</pre>
+    <pre class="p-2 w-full overflow-x-auto" ref="extraText">{{ toValue(songData).extra }}</pre>
   </div>
 </template>
 
@@ -72,6 +72,7 @@ definePageMeta({
   }
 });
 
+const extraText: any = ref(null);
 onMounted(() => {
   textTypeButton.value.onclick = () => {
     view.value = 'Text';
@@ -82,7 +83,32 @@ onMounted(() => {
   chordsTextTypeButton.value.onclick = () => {
     view.value = 'ChordsText';
   }
+  makeLinksInString(extraText.value, songData.value.extra);
 });
+
+function makeLinksInString(elem: any, string: string) {
+  if (!string) return;
+  const linkStart = 'https://';
+  let index = string.indexOf(linkStart);
+  let endLink = 0;
+  elem.innerHTML = '';
+  while (index !== -1) {
+    elem.append(string.substring(endLink, index));
+    endLink = string.split('').findIndex((value, ind) =>
+      ind >= index + linkStart.length && [' ', ',', ';', ')', '(', '\n'].some(it => it === value));
+    if (endLink === -1)
+      endLink = string.length;
+    let linkString = string.substring(index, endLink);
+    let link = document.createElement('a');
+    link.append(linkString);
+    link.href = linkString;
+    link.target = '_blank';
+    link.style.color = '#06c';
+    elem.append(link);
+    index = string.indexOf(linkStart, endLink);
+  }
+  elem.append(string.substring(endLink));
+}
 </script>
 
 <style scoped>
