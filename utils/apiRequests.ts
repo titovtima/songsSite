@@ -1,5 +1,5 @@
 const apiRequests = {
-    apiUrl: 'https://test.songs.titovtima.ru/api/v1',
+    apiUrl: '/api/v1',
     token: null,
 
     baseRequest: async (url: string, config: any) => {
