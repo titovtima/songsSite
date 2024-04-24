@@ -3,6 +3,10 @@
                ref="modal" id="settings" @cancel="oncancel" @confirm="onconfirm">
     <template #title>Настройки</template>
     <ChangeFontSize ref="changeFontSize" class="bg-gray-100 px-[5px]"/>
+    <a href="https://songs.titovtima.ru/"
+       class="block bg-gray-200 px-[5px] h-[75px] leading-[75px] overflow-y-hidden overflow-x-auto whitespace-nowrap">
+      Перейти на старую версию
+    </a>
   </ModalWindow>
 </template>
 
@@ -10,14 +14,14 @@
 const changeFontSize: any = ref(null);
 const modal: any = ref(null);
 
-const props = defineProps(['show']);
+defineProps(['show']);
 defineEmits(['update:show']);
 
 // if (process.client) {
 //   document.cookie = "settings=kds; path=/; max-age=-1";
 // }
 
-const settings: any = useCookie('settings', { path: '/' });
+const settings: any = useCookie('settings', {path: '/'});
 
 if (process.client) {
   let html = document.documentElement;
@@ -27,12 +31,12 @@ if (process.client) {
     }
   }
   watch(() => settings.value.fontSize, () => {
-    useHead({ htmlAttrs: { style: `font-size: ${settings.value.fontSize}px` }});
-  }, { immediate: true });
+    useHead({htmlAttrs: {style: `font-size: ${settings.value.fontSize}px`}});
+  }, {immediate: true});
 }
 
 if (settings.value) {
-  useHead({ htmlAttrs: { style: `font-size: ${settings.value.fontSize}px` }});
+  useHead({htmlAttrs: {style: `font-size: ${settings.value.fontSize}px`}});
 }
 
 let oncancel = () => {};
