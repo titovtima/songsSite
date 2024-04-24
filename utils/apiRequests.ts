@@ -1,5 +1,5 @@
 const apiRequests = {
-    apiUrl: '/api/v1',
+    apiUrl: (process.client ? '/api/v1' : 'https://songs.istokspb.org/api/v1'),
     token: null,
 
     baseRequest: async (url: string, config: any) => {
