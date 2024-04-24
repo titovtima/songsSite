@@ -1,7 +1,7 @@
 <template>
   <ul>
     <li v-for="list in lists">
-      <a class="list-ref" :href="'/song/' + list.id" @click.prevent="clickLink(list.id)">{{ list.name }}</a>
+      <a class="list-ref" :href="'/songs_list/' + list.id" @click.prevent="clickLink(list.id)">{{ list.name }}</a>
     </li>
   </ul>
 </template>

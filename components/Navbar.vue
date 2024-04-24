@@ -3,7 +3,7 @@
     <ul>
       <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
       <li @click="$emit('clickSettings')">настройки</li>
-      <li :class="{ active: route.path == '/songs_lists' }" @click="listsButtonClick">
+      <li :class="{ active: route.path.match(/\/songs_lists/) }" @click="listsButtonClick">
         {{ (navState.listId != null) ? 'к списку' : 'списки' }}
       </li>
     </ul>
