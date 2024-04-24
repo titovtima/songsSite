@@ -3,8 +3,11 @@
     <ul>
       <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
       <li @click="$emit('clickSettings')">настройки</li>
-      <li :class="{ active: route.path.match(/\/songs_lists/) }" @click="listsButtonClick">
+      <li v-if="false" :class="{ active: route.path.match(/\/songs_lists/) }" @click="listsButtonClick">
         {{ (navState.listId != null) ? 'к списку' : 'списки' }}
+      </li>
+      <li v-else :class="{ active: route.path.match(/\/songs_list\/1/) }"  @click="router.push('/songs_list/1')">
+        детские
       </li>
     </ul>
   </nav>
