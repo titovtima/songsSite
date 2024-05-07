@@ -11,7 +11,11 @@
 // localStorage.removeItem('username');
 // localStorage.removeItem('password');
 
+const route = useRoute();
 useHead({ link: [{href: '/angel.jpg', rel: 'icon'}] });
+watchEffect( () => {
+  useHead({link: [{href: 'https://songs.istokspb.org' + route.path, rel: 'canonical'}]});
+});
 
 const showSettingsModal = ref(false);
 </script>
