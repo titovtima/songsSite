@@ -41,7 +41,9 @@ const chordsTypeButton: any = ref(null);
 const chordsTextTypeButton: any = ref(null);
 
 const songData: any = ref({parts: []});
-const view = ref('Text');
+const view = useCookie('view', {path: '/song/'});
+if (!view.value)
+  view.value = 'Text';
 const keyShift = ref(0);
 const textParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Text'));
 const chordsParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Chords'));
