@@ -7,19 +7,21 @@
                :key-shift="keyShift" @update:key-shift="(kShift) => $emit('update:keyShift', kShift)"/>
     <pre class="text-base" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
         (data.type == 'Text' || originalKey == null) ? data.data :
-          chordsTextToString(transposeChordsText(chordsTextFromPlainText(data.data, "English"),
-            keys[originalKey], keys[(originalKey + keyShift) % 12 + ((originalKey < 12) ? 0 : 12)],
-            data.type == 'ChordsText' ))
+          chordsTextToString(transposeChordsText(changeChordsTextNotation(chordsTextFromPlainText(data.data, 'English'),
+            settings.notation, data.type == 'ChordsText'),
+            keys[originalKey], keys[(originalKey + keyShift) % 12 + ((originalKey < 12) ? 0 : 12)], data.type == 'ChordsText' ))
       }}</pre>
   </div>
 </template>
 
 <script setup lang="ts">
 import pkg from '@titovtima/music-theory';
-const { getCircleKeys, chordsTextToString, transposeChordsText, chordsTextFromPlainText } = pkg;
+const { getCircleKeys, chordsTextToString, transposeChordsText, chordsTextFromPlainText, changeChordsTextNotation } = pkg;
 
 const props = defineProps(['data', 'keyShift', 'generalKey']);
 defineEmits(['update:keyShift']);
+
+const settings: any = useCookie('settings');
 
 const keys = getCircleKeys();
 

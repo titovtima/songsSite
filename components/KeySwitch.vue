@@ -2,7 +2,7 @@
   <ul>
     <li v-for="key in showKeys" :class="{ active: key == toValue(selectedKey) }"
         @click="$emit('update:keyShift', (keys.indexOf(key) + 24 - original) % 12)">
-      {{ keyName(key) }}
+      {{ keyName(key, settings.notation) }}
     </li>
   </ul>
 </template>
@@ -13,6 +13,8 @@ const { getCircleKeys, keyName } = pkg;
 
 const props = defineProps(['original', 'keyShift']);
 defineEmits(['update:keyShift']);
+
+const settings: any = useCookie('settings');
 
 const keys = getCircleKeys();
 
