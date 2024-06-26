@@ -1,9 +1,9 @@
 <template>
   <ModalWindow :show="show" v-on:update:show="(newShow) => $emit('update:show', newShow)"
-               ref="modal" id="settings" @cancel="oncancel" @confirm="onconfirm">
+               ref="modal" id="settings" @cancel="oncancel" @confirm="onconfirm" fixed-size>
     <template #title>Настройки</template>
     <ChangeFontSize ref="changeFontSize" class="bg-gray-100 px-[5px]"/>
-    <div class="bg-gray-200 py-[5px] h-[155px]">
+    <div class="bg-gray-200 py-[5px] h-min min-h-[155px]">
       <div class="text-center h-[72px] leading-[72px]">Система обозначений</div>
       <div class="inline-block w-1/2 text-center">
         <label class="cursor-pointer">

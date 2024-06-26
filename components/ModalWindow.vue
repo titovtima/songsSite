@@ -1,7 +1,7 @@
 <template>
   <Transition name="show-modal">
-    <div v-if="show" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex w-full h-full items-center justify-center">
-      <div class="p-[20px] bg-white rounded-lg shadow-md w-[90%] align-middle">
+    <div v-if="show" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex w-full h-full justify-center">
+      <div class="p-[20px] bg-white rounded-lg shadow-md w-[90%] mt-[20px] h-min">
         <h2 class="text-lg font-bold mb-[15px]" :class="{ 'min-h-[55px]': fixedSize }">
           <slot name="title"></slot>
         </h2>
