@@ -46,10 +46,13 @@ const notationInput = ref('English');
 if (process.client) {
   let html = document.documentElement;
   if (!settings.value) {
-    settings.value = {
-      fontSize: parseInt(getComputedStyle(html, '').fontSize),
-      notation: 'English',
-    }
+    settings.value = {};
+  }
+  if (!settings.value.fontSize) {
+    settings.value.fontSize = parseInt(getComputedStyle(html, '').fontSize);
+  }
+  if (!settings.value.notation) {
+    settings.value.notation = 'English';
   }
   notationInput.value = settings.value.notation;
   watch(notationInput, (value) => settings.value.notation = value);
