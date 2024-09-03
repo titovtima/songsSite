@@ -27,6 +27,9 @@
         <SongPart v-for="part in viewParts" :data="part" v-model:key-shift="keyShift" :general-key="songData.key"/>
       </div>
     </div>
+    <div>
+      <audio controls v-for="audio in songData.audios" :src="apiRequests.apiUrl + '/audio/' + audio">аудио</audio>
+    </div>
     <pre class="p-2 w-full overflow-x-auto" ref="extraText">{{ toValue(songData).extra }}</pre>
   </div>
 </template>
@@ -40,7 +43,7 @@ const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
 const chordsTextTypeButton: any = ref(null);
 
-const songData: any = ref({parts: []});
+const songData: any = ref({parts: [], audios: []});
 const view = useCookie('view', {path: '/song/'});
 if (!view.value)
   view.value = 'Text';
