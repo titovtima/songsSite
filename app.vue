@@ -1,6 +1,6 @@
 <template>
   <YandexMetrika />
-  <div class="overflow-y-auto h-[100vh] p-[20px]">
+  <div class="overflow-y-auto h-full p-[20px] pb-[100px]">
     <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
   </div>
@@ -29,5 +29,9 @@ body {
   background: #F4F4F4;
   height: 100vh;
   overflow: hidden;
+}
+
+#__nuxt {
+  height: 100%;
 }
 </style>
