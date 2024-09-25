@@ -1,61 +1,67 @@
-const apiRequests = {
-    apiUrl: ((process.client && !window.location.hostname.match(/localhost/))
-        ? '/api/v1' : 'https://songs.istokspb.org/api/v1'),
-    token: null,
+import { clone } from "./global";
 
-    baseRequest: async (url: string, config: any) => {
+const apiRequests = {
+    apiUrl: 'https://songs.istokspb.org/api/v1',
+    // apiUrl: 'http://localhost:2403/api/v1', // for testing
+    tokenCookie: 'auth_token',
+
+    baseRequest: async (url: string, config: RequestInit = {}) => {
         let response: any;
         try {
-            response = await useFetch(apiRequests.apiUrl + url, config);
+            response = await fetch(apiRequests.apiUrl + url, config);
         } catch (err) {
             return new Promise((resolve, reject) => reject('Fetch error'));
         }
-        if (response.status.value == 'success') {
-            return response.data.value;
+        if (response.ok) {
+            return response.json();
         }
         return new Promise((resolve, reject) => reject(response));
     },
 
-    getJWT: async (username: string, password: string) => {
-        let result = apiRequests.baseRequest('/login', {
-            method: 'POST',
-            body: JSON.stringify({username: username, password: password})
-        });
-        result.then((response: any) => {
-            apiRequests.token = response.token;
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-        });
+    login: async(username: string, password: string) => {
+        try {
+            let response = await apiRequests.baseRequest('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password }),
+            });
+            // let cookie = useCookie(apiRequests.tokenCookie);
+            // cookie.value = response.token;
+            document.cookie = apiRequests.tokenCookie + '=' + response.token;
+            return apiRequests.checkAuthorized();;
+        }
+        catch(err) {
+            return new Promise((resolve, reject) => reject({status: 401}));
+        }
+    },
+
+    checkAuthorized: async() => {
+        let token = useCookie(apiRequests.tokenCookie).value;
+        if (!token)
+            return new Promise((resolve, reject) => reject({status: 401}));
+        let response = apiRequests.authorizedRequest('/users/me');
+        response.then(response => {
+            useState('userData').value = response;
+        }).catch(() => {});
+        return response;
     },
 
     authorizedRequest: async (url: string, config: RequestInit = {}) => {
-        if (process.server) return new Promise((resolve, reject) => reject({status: 401}));
-        if (apiRequests.token == null || parseJwt(apiRequests.token)['exp'] < new Date()) {
-            let username = localStorage.getItem('username');
-            let password = localStorage.getItem('password');
-            if (username == null || password == null)
-                return new Promise((resolve, reject) => reject({status: 401}));
-            try {
-                await apiRequests.getJWT(username, password);
-            } catch (e) {
-                return new Promise((resolve, reject) => reject({status: 401}));
-            }
-        }
-        let newConfig: any = config;
+        if (!useCookie(apiRequests.tokenCookie).value)
+            return new Promise((resolve, reject) => reject({status: 401}));
+        let newConfig: any = clone(config);
         if (!newConfig.headers)
             newConfig.headers = {};
-        newConfig.headers['Authorization'] = 'Bearer ' + apiRequests.token;
+        newConfig.headers['Authorization'] = 'Bearer ' + useCookie(apiRequests.tokenCookie).value;
         return apiRequests.baseRequest(url, newConfig);
     },
 
     optionallyAuthorizedRequest: async (url: string, config: RequestInit = {}) => {
-        if (process.client) {
-            try {
-                return await apiRequests.authorizedRequest(url, config);
-            } catch (e) {
-                return apiRequests.baseRequest(url, config);
-            }
-        } else {
+        try {
+            return await apiRequests.authorizedRequest(url, config);
+        } catch (e) {
             return apiRequests.baseRequest(url, config);
         }
     },

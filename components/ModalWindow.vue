@@ -10,8 +10,8 @@
         </p>
         <div :class="{ 'min-h-[55px]': fixedSize }">
           <slot name="buttons">
-            <button @click="buttonClick(() => { $emit('confirm') })">Сохранить</button>
-            <button @click="buttonClick(() => { $emit('cancel') })">Отмена</button>
+            <button class="modal-button" @click="buttonClick(() => { $emit('confirm') })">Сохранить</button>
+            <button class="modal-button" @click="buttonClick(() => { $emit('cancel') })">Отмена</button>
           </slot>
         </div>
       </div>
@@ -33,8 +33,8 @@ function buttonClick(callback: () => void) {
 }
 </script>
 
-<style scoped>
-button {
+<style>
+.modal-button {
   @apply bg-gray-500 hover:bg-gray-700 text-white font-bold py-[5px] px-[5px] rounded-sm mr-[10px];
 }
 

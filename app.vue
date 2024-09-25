@@ -8,9 +8,6 @@
 </template>
 
 <script setup lang="ts">
-// localStorage.removeItem('username');
-// localStorage.removeItem('password');
-
 const route = useRoute();
 useHead({ link: [{href: '/angel.jpg', rel: 'icon'}] });
 watchEffect( () => {
