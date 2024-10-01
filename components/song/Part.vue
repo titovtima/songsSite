@@ -43,7 +43,8 @@ watch(shiftOriginalKey, (shift: any) => {
   }
 });
 
-watch(editMode, () => {
+const view = useCookie('view');
+watch([editMode, view], () => {
   if (editMode.value) {
     setTimeout(() => {
       fitTextareaHeight(contentTextarea.value);
