@@ -2,7 +2,7 @@ import { clone } from "./global";
 
 const apiRequests = {
     apiUrl: 'https://songs.istokspb.org/api/v1',
-    // apiUrl: 'http://localhost:2403/api/v1', // for testing
+    // apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
     tokenCookie: 'auth_token',
 
     baseRequest: async (url: string, config: RequestInit = {}) => {
@@ -13,7 +13,7 @@ const apiRequests = {
             return new Promise((resolve, reject) => reject('Fetch error'));
         }
         if (response.ok) {
-            return response.json();
+            return response.json().catch(() => {});
         }
         return new Promise((resolve, reject) => reject(response));
     },
@@ -66,8 +66,18 @@ const apiRequests = {
         }
     },
 
-    getSong: async (songId: number)=> {
+    getSong: async (songId: number) => {
         return apiRequests.optionallyAuthorizedRequest('/song/' + songId);
+    },
+
+    postSong: async (songId: string, data: any) => {
+        return apiRequests.authorizedRequest('/song/' + songId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
     },
 
     getMainListInfo: async () => {

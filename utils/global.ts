@@ -15,3 +15,8 @@ export function clone(object: any): any {
         return result;
     }
 }
+
+export function fitTextareaHeight(element: any) {
+    element.style.height = 0;
+    element.style.height = element.scrollHeight + 'px';
+}

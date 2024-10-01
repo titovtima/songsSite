@@ -21,23 +21,31 @@
         </button>
       </div>
     </div>
-    <KeySwitch v-if="view != 'Text' && songData.key != null" :original="songData.key" v-model:key-shift="keyShift" class="mt-2"/>
+    <KeySwitch v-if="view != 'Text' && (songData.key != null || editMode)" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
-        <SongPart v-for="part in viewParts" :data="part" v-model:key-shift="keyShift" :general-key="songData.key"/>
+        <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"/>
       </div>
     </div>
     <div>
       <audio controls v-for="audio in songData.audios" :src="apiRequests.apiUrl + '/audio/' + audio">аудио</audio>
     </div>
-    <pre class="p-2 w-full overflow-x-auto" ref="extraText">{{ toValue(songData).extra }}</pre>
+    <div ref="extraDiv">
+      <pre v-if="!editExtra" @click="clickStartEditExtra" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
+        toValue(songData).extra 
+      }}</pre>
+    <textarea v-else ref="extraTextarea" v-model="songData.extra" class="p-2 w-full overflow-x-auto"
+        @input="(event) => fitTextareaHeight(event.target)"></textarea>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
+import { fitTextareaHeight } from "~/utils/global";
 
 const route = useRoute();
+const songId = String(route.params.id);
 
 const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
@@ -47,7 +55,6 @@ const songData: any = ref({parts: [], audios: []});
 const view = useCookie('view', {path: '/song/'});
 if (!view.value)
   view.value = 'Text';
-const keyShift = ref(0);
 const textParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Text'));
 const chordsParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Chords'));
 const chordsTextParts = computed(() => songData.value.parts
@@ -57,9 +64,14 @@ const viewParts = computed(() => {
   else if (view.value == 'Chords') return toValue(chordsParts);
   else return toValue(chordsTextParts);
 });
+const editMode = useState('editMode');
+const editExtra = ref(false);
+const extraDiv: any = ref(null);
+const extraTextarea: any = ref(null);
+const keyShift = useState('keyShift');
 
 try {
-  songData.value = await apiRequests.getSong(Number(route.params.id));
+  songData.value = await apiRequests.getSong(Number(songId));
 } catch (e) {
   throw createError({
     statusCode: 404,
@@ -74,6 +86,16 @@ definePageMeta({
     if (from.name == 'songs_list-id' && to.name == 'song-id') {
       navState.value.listId = Number(from.params.id);
     }
+  }
+});
+
+
+watch(editMode, () => {
+  if (!editMode.value) {
+    console.log('saving data', songData.value);
+    apiRequests.postSong(songId, songData.value);
+  } else {
+    keyShift.value = 0;
   }
 });
 
@@ -113,6 +135,25 @@ function makeLinksInString(elem: any, string: string) {
     index = string.indexOf(linkStart, endLink);
   }
   elem.append(string.substring(endLink));
+}
+
+function clickStartEditExtra(event: Event) {
+  if (editMode.value) { 
+    editExtra.value = true;
+    setTimeout(() => {
+      window.addEventListener('click', clickCloseEditExtra);
+      event.stopPropagation();
+      fitTextareaHeight(extraTextarea.value);
+      extraTextarea.value.focus();
+    }, 50);
+  }
+}
+
+function clickCloseEditExtra(event: Event) {
+  if (!extraDiv.value.contains(event.target)) {
+    editExtra.value = false;
+    window.removeEventListener('click', clickCloseEditExtra);
+  }
 }
 </script>
 
