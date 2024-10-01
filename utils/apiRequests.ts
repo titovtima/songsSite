@@ -27,8 +27,6 @@ const apiRequests = {
                 },
                 body: JSON.stringify({ username: username, password: password }),
             });
-            // let cookie = useCookie(apiRequests.tokenCookie);
-            // cookie.value = response.token;
             document.cookie = apiRequests.tokenCookie + '=' + response.token;
             return apiRequests.checkAuthorized();;
         }

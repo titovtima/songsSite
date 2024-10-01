@@ -27,7 +27,6 @@ defineEmits(['update:keyShift']);
 const editMode = useState('editMode');
 const keyShift = useState('keyShift', () => 0);
 const shiftOriginalKey: any = useState('shiftOriginalKey');
-// const edit = ref(false);
 const partDiv: any = ref(null);
 const mainContent: any = ref(null);
 const contentTextarea: any = ref(null);
@@ -69,28 +68,6 @@ function getTransposedText(original: number, shift: number) {
       keys[(toValue(original) + shift) % 12 + ((toValue(original) < 12) ? 0 : 12)],
       props.data.type == 'ChordsText' ));
 }
-
-// function clickStartEdit(event: Event) {
-//   if (editMode.value) { 
-//     edit.value = true;
-//     setTimeout(() => {
-//       window.addEventListener('click', clickCloseEdit);
-//       event.stopPropagation();
-//       fitTextareaHeight(contentTextarea.value);
-//     }, 50);
-//   }
-// }
-
-// function clickCloseEdit(event: Event) {
-//   if (partDiv.value) {
-//     if (!partDiv.value.contains(event.target)) {
-//       edit.value = false;
-//       window.removeEventListener('click', clickCloseEdit);
-//     }
-//   } else {
-//     window.removeEventListener('click', clickCloseEdit);
-//   }
-// }
 </script>
 
 <style scoped>
