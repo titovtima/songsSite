@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="header">
+    <h1 class="header" :contenteditable="editMode" @input="(event: any) => { songData.name = event.target.textContent; }">
       {{ songData.name ? songData.name : '' }}
     </h1>
     <div>
@@ -24,12 +24,18 @@
     <div class="song-rights" v-if="songRights">
       <label>Владелец:</label>
       <input type="text" v-model="newSongRights.owner" :disabled="!editMode || (songRights.owner != userData.username && !userData.isAdmin)"/>
+      
       <label>Редакторы:</label>
       <StringsListInput v-if="editMode" v-model:list="newSongRights.writers"/>
       <div v-else>{{ songRights.writers.join(',') }}</div>
+      
       <label>Читатели:</label>
       <StringsListInput v-if="editMode" v-model:list="newSongRights.readers"/>
       <div v-else>{{ songRights.readers.join(',') }}</div>
+      
+      <label>Приватная</label>
+      <input class="leading-[100%] mr-auto left-0" type="checkbox" :disabled="!editMode || !userData.isAdmin"
+          :checked="!songData.public" @change="(event: any) => songData.public = !event.target.checked"/>
     </div>
     <KeySwitch v-if="view != 'Text' && (songData.key != null || editMode)" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
@@ -67,7 +73,6 @@ const newSongRights: any = ref(null);
 const userData: any = useState('userData');
 const canEdit = useState('canEdit');
 watch(songRights, rights => {
-  console.log(rights);
   newSongRights.value = rights;
   apiRequests.checkAuthorized().then(() => {
     canEdit.value = userData.value.isAdmin || userData.value.username == rights.owner ||
