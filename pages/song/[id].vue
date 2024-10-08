@@ -6,22 +6,22 @@
     <div>
       <div class="type-button-wrap">
         <button class="type-button" ref="textTypeButton"
-                :class="{ active: view == 'Text', hidden: toValue(textParts).length == 0 }">Текст
+                :class="{ active: view == 'Text', hidden: toValue(textParts).length == 0 && !editMode }">Текст
         </button>
       </div>
       <div class="type-button-wrap">
         <button class="type-button" ref="chordsTypeButton"
-                :class="{ active: view == 'Chords', hidden: toValue(chordsParts).length == 0 }">Аккорды
+                :class="{ active: view == 'Chords', hidden: toValue(chordsParts).length == 0 && !editMode }">Аккорды
         </button>
       </div>
       <div class="type-button-wrap">
         <button class="type-button" ref="chordsTextTypeButton"
-                :class="{ active: view == 'ChordsText', hidden: toValue(chordsTextParts).length == 0 }">
+                :class="{ active: view == 'ChordsText', hidden: toValue(chordsTextParts).length == 0 && !editMode }">
           Аккорды в тексте
         </button>
       </div>
     </div>
-    <div class="song-rights" v-if="songRights">
+    <div class="song-rights" v-if="songRights && editMode">
       <label>Владелец:</label>
       <input type="text" v-model="newSongRights.owner" :disabled="!editMode || (songRights.owner != userData.username && !userData.isAdmin)"/>
       
@@ -32,15 +32,25 @@
       <label>Читатели:</label>
       <StringsListInput v-if="editMode" v-model:list="newSongRights.readers"/>
       <div v-else>{{ songRights.readers.join(',') }}</div>
-      
-      <label>Приватная</label>
-      <input class="leading-[100%] mr-auto left-0" type="checkbox" :disabled="!editMode || !userData.isAdmin"
-          :checked="!songData.public" @change="(event: any) => songData.public = !event.target.checked"/>
+    </div>
+    <div v-if="songRights && editMode" class="flex mt-2">
+      <label class="flex" style="align-items: center;">
+        Приватная
+        <input class="mx-1" type="checkbox" :disabled="!editMode || !userData.isAdmin"
+            :checked="!songData.public" @change="(event: any) => songData.public = !event.target.checked"/>
+      </label>
+      <label v-if="userData.isAdmin" class="ml-5 flex" style="align-items: center;">
+        В основном списке
+        <input class="mx-1" type="checkbox" :disabled="!editMode" v-model="songData.inMainList"/>
+      </label>
     </div>
     <KeySwitch v-if="view != 'Text' && (songData.key != null || editMode)" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"/>
+        <button class="w-full" :class="{ hidden: !editMode }" @click="() => { addPart(); }">
+          Добавить часть
+        </button>
       </div>
     </div>
     <div>
@@ -61,6 +71,7 @@ import apiRequests from "~/utils/apiRequests";
 import { fitTextareaHeight } from "~/utils/global";
 
 const route = useRoute();
+const router = useRouter();
 const songId = String(route.params.id);
 
 const textTypeButton: any = ref(null);
@@ -69,7 +80,7 @@ const chordsTextTypeButton: any = ref(null);
 
 const songData: any = ref({parts: [], audios: []});
 const songRights: any = ref(null);
-const newSongRights: any = ref(null);
+const newSongRights: any = ref({owner: '', writers: [], readers: []});
 const userData: any = useState('userData');
 const canEdit = useState('canEdit');
 watch(songRights, rights => {
@@ -88,30 +99,63 @@ const chordsParts = computed(() => songData.value.parts.filter((part: { type: st
 const chordsTextParts = computed(() => songData.value.parts
   .filter((part: { type: string; }) => part.type == 'ChordsText'));
 const viewParts = computed(() => {
-  if (view.value == 'Text') return toValue(textParts);
-  else if (view.value == 'Chords') return toValue(chordsParts);
-  else return toValue(chordsTextParts);
+  if (view.value == 'Text') return toValue(textParts).sort((value: any) => value.ord);
+  else if (view.value == 'Chords') return toValue(chordsParts).sort((value: any) => value.ord);
+  else return toValue(chordsTextParts).sort((value: any) => value.ord);
 });
 
 const editMode: any = useState('editMode');
 const editExtra = ref(false);
 const extraDiv: any = ref(null);
 const extraTextarea: any = ref(null);
+if (route.query['edit']) {
+  watch(userData, () => {
+    editMode.value = true;
+  }, {once: true});
+}
+
 const keyShift = useState('keyShift');
 
-try {
-  songData.value = await apiRequests.getSong(Number(songId));
-} catch (e) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Песня не найдена'
+if (songId == 'new') {
+  songData.value = {
+    name: 'Новая песня',
+    parts: [],
+    audios: [],
+    performances: [],
+    key: null,
+    public: false,
+    inMainList: true,
+  };
+  songRights.value = {
+    owner: '',
+    writers: [],
+    readers: [],
+  };
+  apiRequests.checkAuthorized().then(() => {
+    songRights.value.owner = userData.value.username;
+  }).catch(() => {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Песня не найдена'
+    });
   });
+} else {
+  try {
+    songData.value = await apiRequests.getSong(Number(songId));
+  } catch (e) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Песня не найдена'
+    });
+  }
+
+  apiRequests.getSongRights(Number(songId))
+    .then(response => {
+      songRights.value = response;
+    }).catch(() => {});
 }
+
 useHead({title: songData.value.name});
-apiRequests.getSongRights(Number(songId))
-  .then(response => {
-    songRights.value = response;
-  }).catch(() => {});
 
 definePageMeta({
   middleware: (to, from) => {
@@ -123,25 +167,7 @@ definePageMeta({
 });
 
 watch(editMode, () => {
-  if (!editMode.value) {
-    let numberSongId = Number(songId);
-    if (numberSongId) {
-      console.log('saving data', songData.value);
-      apiRequests.postSong(songId, songData.value);
-      console.log('saving rights', newSongRights.value);
-      apiRequests.postSongRights(numberSongId, newSongRights.value);
-    } else if (songId == 'new') {
-      console.log('saving data', songData.value);
-      apiRequests.postSong(songId, songData.value)
-        .then(response => {
-          let newSongId = response.songId;
-          console.log('saving rights', newSongRights.value);
-          apiRequests.postSongRights(newSongId, newSongRights.value);
-        });
-    } else {
-      alert('Wrong song id');
-    }
-  } else {
+  if (editMode.value) {
     keyShift.value = 0;
   }
 });
@@ -202,6 +228,59 @@ function clickCloseEditExtra(event: Event) {
     window.removeEventListener('click', clickCloseEditExtra);
   }
 }
+
+function addPart() {
+  console.log(songData.value.parts);
+  if (view.value == 'Text') {
+    let ord = songData.value.parts.reduce((acc: number, value: any) => { 
+      if (value.type == 'Text')
+        return Math.max(acc, value.ord);
+      else
+        return acc;
+    }, 0);
+    songData.value.parts.push({type: 'Text', data: '', name: '', key: null, ord: ord + 1});
+  } else if (view.value == 'Chords') {
+    let ord = songData.value.parts.reduce((acc: number, value: any) => { 
+      if (value.type == 'Chords')
+        return Math.max(acc, value.ord);
+      else
+        return acc;
+    }, 0);
+    songData.value.parts.push({type: 'Chords', data: '', name: '', key: null, ord: ord + 1});
+  } else {
+    let ord = songData.value.parts.reduce((acc: number, value: any) => { 
+      if (value.type == 'ChordsText')
+        return Math.max(acc, value.ord);
+      else
+        return acc;
+    }, 0);
+    songData.value.parts.push({type: 'ChordsText', data: '', name: '', key: null, ord: ord + 1});
+  }
+}
+
+const saveFunction = functionsRefs.saveFunction;
+saveFunction.value = () => {
+  let numberSongId = Number(songId);
+  if (numberSongId) {
+    console.log('saving data', songData.value);
+    apiRequests.postSong(songId, songData.value);
+    console.log('saving rights', newSongRights.value);
+    apiRequests.postSongRights(numberSongId, newSongRights.value);
+  } else if (songId == 'new') {
+    console.log('saving data', songData.value);
+    apiRequests.postSong(songId, songData.value)
+      .then(response => {
+        console.log(response);
+        let newSongId = response.id;
+        newSongRights.value.songId = newSongId;
+        console.log('saving rights', newSongRights.value);
+        apiRequests.postSongRights(newSongId, newSongRights.value);
+        router.push('/song/' + newSongId);
+      });
+  } else {
+    alert('Wrong song id');
+  }
+}
 </script>
 
 <style scoped>
@@ -233,7 +312,7 @@ function clickCloseEditExtra(event: Event) {
 
 .song-rights {
   display: grid;
-  grid-template-columns: min-content auto;
+  grid-template-columns: max-content auto;
 }
 
 .song-rights > * {

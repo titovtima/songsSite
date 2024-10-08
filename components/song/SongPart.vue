@@ -1,6 +1,6 @@
 <template>
   <div ref="partDiv" class="my-5 bg-white p-3 w-full min-w-min">
-    <div class="text-xl border-b border-black font-bold" v-if="data.name">
+    <div class="text-xl border-b border-black font-bold" v-if="data.name || editMode">
       <span v-if="!editMode">{{ data.name }}</span>
       <input v-else type="text" class="w-full" v-model="data.name">
     </div>

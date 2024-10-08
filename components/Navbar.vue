@@ -10,7 +10,7 @@
         детские
       </li>
       <li v-if="canEdit">
-        <span v-if="editMode" @click="() => { editMode = false; }">сохранить</span>
+        <span v-if="editMode" @click="() => { saveFunction(); editMode = false; }">сохранить</span>
         <span v-else @click="() => { editMode = true; }">редактировать</span>
       </li>
     </ul>
@@ -22,8 +22,9 @@ defineEmits(['clickSettings']);
 
 const route = useRoute();
 const router = useRouter();
-const canEdit = useState('canEdit', () => false);
-const editMode = useState('editMode', () => false);
+const canEdit = useState('canEdit');
+const editMode = useState('editMode');
+const saveFunction = functionsRefs.saveFunction;
 
 const navState: any = useState('navigation', () => { return { listId: null, prev: null }; });
 

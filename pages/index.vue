@@ -1,5 +1,6 @@
 <template>
   <div>
+    <a v-if="isAuthorised" href="/song/new?edit=true" class="block mb-2">+ добавить песню</a>
     <SongSearch :search-list="toValue(mainListData)" @display-list="(list) => searchedList = list"/>
     <SongList :list="toValue(displayList)" class="mt-5"/>
   </div>
@@ -23,6 +24,9 @@ const displayList = computed(() => {
     else return 0;
   });
 });
+
+const userData = useState('userData');
+const isAuthorised = computed(() => !!userData.value);
 
 if (process.client) {
   apiRequests.getMainListInfo()
