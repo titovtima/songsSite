@@ -29,7 +29,7 @@ const password: any = ref(null);
 async function onconfirm() {
   apiRequests.login(username.value.value, password.value.value)
     .then(() => {
-      emit('update:show', false);
+      window.location.reload();
     })
     .catch(() => { alert('Не удалось войти'); });
 }

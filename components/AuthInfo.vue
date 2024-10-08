@@ -19,9 +19,9 @@ const showInfo = ref(false);
 const userData: any = useState('userData');
 
 function onconfirm() {
-  document.cookie = apiRequests.tokenCookie + '=0; max-age=-1';
+  document.cookie = apiRequests.tokenCookie + '=0; max-age=0; path=/';
   useState('userData').value = null;
-  emit('update:show', false);
+  window.location.reload();
 }
 
 function oncancel() {
