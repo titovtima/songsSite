@@ -1,8 +1,8 @@
 import { clone } from "./global";
 
 const apiRequests = {
-    apiUrl: 'https://songs.istokspb.org/api/v1',
-    // apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
+    // apiUrl: 'https://songs.istokspb.org/api/v1',
+    apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
     tokenCookie: 'auth_token',
 
     baseRequest: async (url: string, config: RequestInit = {}) => {
@@ -70,6 +70,20 @@ const apiRequests = {
 
     postSong: async (songId: string, data: any) => {
         return apiRequests.authorizedRequest('/song/' + songId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
+    },
+
+    getSongRights: async (songId: number) => {
+        return apiRequests.authorizedRequest('/song/' + songId + '/rights');
+    },
+
+    postSongRights: async (songId: number, data: any) => {
+        return apiRequests.authorizedRequest('/song/' + songId + '/rights', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

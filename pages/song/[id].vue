@@ -21,6 +21,16 @@
         </button>
       </div>
     </div>
+    <div class="song-rights" v-if="songRights">
+      <label>Владелец:</label>
+      <input type="text" v-model="newSongRights.owner" :disabled="!editMode || (songRights.owner != userData.username && !userData.isAdmin)"/>
+      <label>Редакторы:</label>
+      <StringsListInput v-if="editMode" v-model:list="newSongRights.writers"/>
+      <div v-else>{{ songRights.writers.join(',') }}</div>
+      <label>Читатели:</label>
+      <StringsListInput v-if="editMode" v-model:list="newSongRights.readers"/>
+      <div v-else>{{ songRights.readers.join(',') }}</div>
+    </div>
     <KeySwitch v-if="view != 'Text' && (songData.key != null || editMode)" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
@@ -35,7 +45,7 @@
         toValue(songData).extra 
       }}</pre>
     <textarea v-else ref="extraTextarea" v-model="songData.extra" class="p-2 w-full overflow-x-auto"
-        @input="(event) => fitTextareaHeight(event.target)"></textarea>
+        @input="(event: any) => fitTextareaHeight(event.target)"></textarea>
     </div>
   </div>
 </template>
@@ -52,9 +62,22 @@ const chordsTypeButton: any = ref(null);
 const chordsTextTypeButton: any = ref(null);
 
 const songData: any = ref({parts: [], audios: []});
+const songRights: any = ref(null);
+const newSongRights: any = ref(null);
+const userData: any = useState('userData');
+const canEdit = useState('canEdit');
+watch(songRights, rights => {
+  console.log(rights);
+  newSongRights.value = rights;
+  apiRequests.checkAuthorized().then(() => {
+    canEdit.value = userData.value.isAdmin || userData.value.username == rights.owner ||
+      rights.writers.includes(userData.value.username);
+  }).catch(() => {});
+});
 const view = useCookie('view', {path: '/song/'});
 if (!view.value)
   view.value = 'Text';
+
 const textParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Text'));
 const chordsParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Chords'));
 const chordsTextParts = computed(() => songData.value.parts
@@ -64,7 +87,8 @@ const viewParts = computed(() => {
   else if (view.value == 'Chords') return toValue(chordsParts);
   else return toValue(chordsTextParts);
 });
-const editMode = useState('editMode');
+
+const editMode: any = useState('editMode');
 const editExtra = ref(false);
 const extraDiv: any = ref(null);
 const extraTextarea: any = ref(null);
@@ -79,6 +103,10 @@ try {
   });
 }
 useHead({title: songData.value.name});
+apiRequests.getSongRights(Number(songId))
+  .then(response => {
+    songRights.value = response;
+  }).catch(() => {});
 
 definePageMeta({
   middleware: (to, from) => {
@@ -89,11 +117,25 @@ definePageMeta({
   }
 });
 
-
 watch(editMode, () => {
   if (!editMode.value) {
-    console.log('saving data', songData.value);
-    apiRequests.postSong(songId, songData.value);
+    let numberSongId = Number(songId);
+    if (numberSongId) {
+      console.log('saving data', songData.value);
+      apiRequests.postSong(songId, songData.value);
+      console.log('saving rights', newSongRights.value);
+      apiRequests.postSongRights(numberSongId, newSongRights.value);
+    } else if (songId == 'new') {
+      console.log('saving data', songData.value);
+      apiRequests.postSong(songId, songData.value)
+        .then(response => {
+          let newSongId = response.songId;
+          console.log('saving rights', newSongRights.value);
+          apiRequests.postSongRights(newSongId, newSongRights.value);
+        });
+    } else {
+      alert('Wrong song id');
+    }
   } else {
     keyShift.value = 0;
   }
@@ -182,5 +224,18 @@ function clickCloseEditExtra(event: Event) {
   .header {
     @apply text-2xl;
   }
+}
+
+.song-rights {
+  display: grid;
+  grid-template-columns: min-content auto;
+}
+
+.song-rights > * {
+  margin-top: 0.5rem;
+}
+
+.song-rights > div, .song-rights > input {
+  background: #fff;
 }
 </style>

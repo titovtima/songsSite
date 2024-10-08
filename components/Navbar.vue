@@ -9,7 +9,7 @@
       <li v-else :class="{ active: route.path.match(/\/songs_list\/1/) }"  @click="router.push('/songs_list/1')">
         детские
       </li>
-      <li v-if="isAuthorized">
+      <li v-if="canEdit">
         <span v-if="editMode" @click="() => { editMode = false; }">сохранить</span>
         <span v-else @click="() => { editMode = true; }">редактировать</span>
       </li>
@@ -22,12 +22,10 @@ defineEmits(['clickSettings']);
 
 const route = useRoute();
 const router = useRouter();
-const isAuthorized = ref(false);
+const canEdit = useState('canEdit', () => false);
 const editMode = useState('editMode', () => false);
 
 const navState: any = useState('navigation', () => { return { listId: null, prev: null }; });
-
-apiRequests.checkAuthorized().then(() => { isAuthorized.value = true; }).catch(() => {});
 
 function listsButtonClick() {
   if (navState.value.listId) {
