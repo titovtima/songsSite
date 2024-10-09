@@ -44,7 +44,7 @@
         <input class="mx-1" type="checkbox" :disabled="!editMode" v-model="songData.inMainList"/>
       </label>
     </div>
-    <KeySwitch v-if="view != 'Text' && (songData.key != null || editMode)" v-model:original="songData.key" class="mt-2"/>
+    <KeySwitch v-if="songData.key != null || editMode" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
@@ -116,6 +116,15 @@ if (route.query['edit']) {
 }
 
 const keyShift = useState('keyShift');
+const shiftOriginalKey: any = useState('shiftOriginalKey');
+
+watch(shiftOriginalKey, (shift: any) => {
+  songData.value.parts.forEach((part: any) => {
+    if (editMode.value && shift.shift != 0 && part.type != 'Text' && (part.key != null || songData.value.key != null)) {
+      part.data = getTransposedText(part.data, shift.original, shift.shift, part.type == 'ChordsText');
+    }
+  })
+});
 
 if (songId == 'new') {
   songData.value = {

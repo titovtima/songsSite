@@ -8,7 +8,7 @@
       <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" class="mb-1"/>
       <div v-if="!editMode">
         <pre class="text-base" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
-          toValue(getTransposedText(originalKey, keyShift))
+          toValue(getTransposedPartText(originalKey, keyShift))
         }}</pre>
       </div>
       <div v-else>
@@ -34,8 +34,6 @@
 </template>
 
 <script setup lang="ts">
-import musicTheory from '@titovtima/music-theory';
-const { getCircleKeys, chordsTextToString, transposeChordsText, chordsTextFromPlainText, changeChordsTextNotation, keyName } = musicTheory;
 import { fitTextareaHeight } from '~/utils/global';
 
 const props = defineProps(['data', 'generalKey']);
@@ -43,23 +41,12 @@ defineEmits(['updateOrder']);
 
 const editMode = useState('editMode');
 const keyShift = useState('keyShift', () => 0);
-const shiftOriginalKey: any = useState('shiftOriginalKey');
 const partDiv: any = ref(null);
 const mainContent: any = ref(null);
 const contentTextarea: any = ref(null);
 
-const settings: any = useCookie('settings');
-
-const keys = getCircleKeys();
 const originalKey = computed(() => (props.data.key != null) ? props.data.key : props.generalKey);
 
-watch(shiftOriginalKey, (shift: any) => {
-  if (editMode.value && shift.shift != 0 && props.data.type != 'Text' && toValue(originalKey) != null) {
-    props.data.data = getTransposedText(shift.original, shift.shift);
-  }
-});
-
-const view = useCookie('view');
 watch([editMode, () => props.data], () => {
   if (editMode.value) {
     setTimeout(() => {
@@ -74,16 +61,9 @@ onMounted(() => {
   }
 });
 
-function getTransposedText(original: number, shift: number) {
+function getTransposedPartText(original: number, shift: number) {
   return (props.data.type == 'Text' || toValue(originalKey) == null) ? props.data.data :
-    chordsTextToString(transposeChordsText(
-      changeChordsTextNotation(
-        chordsTextFromPlainText(props.data.data, 'English'),
-        settings.notation,
-        props.data.type == 'ChordsText'),
-      keys[toValue(original)],
-      keys[(toValue(original) + shift) % 12 + ((toValue(original) < 12) ? 0 : 12)],
-      props.data.type == 'ChordsText' ));
+    getTransposedText(props.data.data, original, shift, props.data.type == 'ChordsText');
 }
 </script>
 
