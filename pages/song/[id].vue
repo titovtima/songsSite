@@ -49,20 +49,22 @@
       <div class="overflow-x-hidden min-w-min">
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
             @update-order="(event) => { updatePartsOrder(event); }"/>
-        <button class="w-full" :class="{ hidden: !editMode }" @click="() => { addPart(); }">
-          Добавить часть
-        </button>
+        <div style="display: flex; align-items: center; flex-direction: column">
+          <button class="mb-5 p-2 bg-white" :class="{ hidden: !editMode }" @click="() => { addPart(); }">
+            Добавить часть
+          </button>
+        </div>
       </div>
     </div>
     <div>
       <audio controls v-for="audio in songData.audios" :src="apiRequests.apiUrl + '/audio/' + audio">аудио</audio>
     </div>
-    <div ref="extraDiv">
-      <pre v-if="!editExtra" @click="clickStartEditExtra" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
+    <div>
+      <pre v-if="!editMode" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
         toValue(songData).extra 
       }}</pre>
-    <textarea v-else ref="extraTextarea" v-model="songData.extra" class="p-2 w-full overflow-x-auto"
-        @input="(event: any) => fitTextareaHeight(event.target)"></textarea>
+      <textarea v-else v-model="songData.extra" class="p-2 w-full overflow-x-auto"
+          @input="(event: any) => fitTextareaHeight(event.target)"></textarea>
     </div>
   </div>
 </template>
@@ -106,9 +108,6 @@ const viewParts = computed(() => {
 });
 
 const editMode: any = useState('editMode');
-const editExtra = ref(false);
-const extraDiv: any = ref(null);
-const extraTextarea: any = ref(null);
 if (route.query['edit']) {
   watch(userData, () => {
     editMode.value = true;
@@ -218,25 +217,6 @@ function makeLinksInString(elem: any, string: string) {
     index = string.indexOf(linkStart, endLink);
   }
   elem.append(string.substring(endLink));
-}
-
-function clickStartEditExtra(event: Event) {
-  if (editMode.value) { 
-    editExtra.value = true;
-    setTimeout(() => {
-      window.addEventListener('click', clickCloseEditExtra);
-      event.stopPropagation();
-      fitTextareaHeight(extraTextarea.value);
-      extraTextarea.value.focus();
-    }, 50);
-  }
-}
-
-function clickCloseEditExtra(event: Event) {
-  if (!extraDiv.value.contains(event.target)) {
-    editExtra.value = false;
-    window.removeEventListener('click', clickCloseEditExtra);
-  }
 }
 
 function addPart() {

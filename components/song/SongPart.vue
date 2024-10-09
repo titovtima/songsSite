@@ -2,17 +2,17 @@
   <div ref="partDiv" class="flex my-5 bg-white p-3 w-full min-w-min">
     <div style="flex: 1 1 max-content; width: 100%;">
       <div class="text-xl border-b border-black font-bold" v-if="data.name || editMode">
-        <span v-if="!editMode">{{ data.name }}</span>
-        <input v-else type="text" class="w-full" v-model="data.name">
+        <span v-if="!editMode" class="p-1">{{ data.name }}</span>
+        <input v-else type="text" class="w-full p-1" v-model="data.name">
       </div>
       <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" class="mb-1"/>
       <div v-if="!editMode">
-        <pre class="text-base" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
+        <pre class="text-base p-1" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
           toValue(getTransposedPartText(originalKey, keyShift))
         }}</pre>
       </div>
       <div v-else>
-        <textarea ref="contentTextarea" v-model="data.data" class="w-full" :class="{ chords: data.type != 'Text' }"
+        <textarea ref="contentTextarea" v-model="data.data" class="w-full p-1" :class="{ chords: data.type != 'Text' }"
             @input="event => fitTextareaHeight(event.target)"></textarea>
       </div>
     </div>
