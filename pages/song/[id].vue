@@ -47,7 +47,8 @@
     <KeySwitch v-if="view != 'Text' && (songData.key != null || editMode)" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
-        <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"/>
+        <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
+            @update-order="(event) => { updatePartsOrder(event); }"/>
         <button class="w-full" :class="{ hidden: !editMode }" @click="() => { addPart(); }">
           Добавить часть
         </button>
@@ -230,32 +231,43 @@ function clickCloseEditExtra(event: Event) {
 }
 
 function addPart() {
-  console.log(songData.value.parts);
   if (view.value == 'Text') {
-    let ord = songData.value.parts.reduce((acc: number, value: any) => { 
-      if (value.type == 'Text')
-        return Math.max(acc, value.ord);
-      else
-        return acc;
-    }, 0);
+    let ord = toValue(textParts).reduce((acc: number, value: any) => Math.max(acc, value.ord), 0);
     songData.value.parts.push({type: 'Text', data: '', name: '', key: null, ord: ord + 1});
   } else if (view.value == 'Chords') {
-    let ord = songData.value.parts.reduce((acc: number, value: any) => { 
-      if (value.type == 'Chords')
-        return Math.max(acc, value.ord);
-      else
-        return acc;
-    }, 0);
+    let ord = toValue(chordsParts).reduce((acc: number, value: any) => Math.max(acc, value.ord), 0);
     songData.value.parts.push({type: 'Chords', data: '', name: '', key: null, ord: ord + 1});
   } else {
-    let ord = songData.value.parts.reduce((acc: number, value: any) => { 
-      if (value.type == 'ChordsText')
-        return Math.max(acc, value.ord);
-      else
-        return acc;
-    }, 0);
+    let ord = toValue(chordsTextParts).reduce((acc: number, value: any) => Math.max(acc, value.ord), 0);
     songData.value.parts.push({type: 'ChordsText', data: '', name: '', key: null, ord: ord + 1});
   }
+}
+
+function updatePartsOrder(event: any) {
+  let partsList = songData.value.parts.filter((value: any) => value.type != event.part.type || value.ord != event.part.ord);
+  if (event.action == 'up') {
+    event.part.ord -= 1.5;
+    partsList.push(event.part);
+  } else if (event.action == 'down') {
+    event.part.ord += 1.5;
+    partsList.push(event.part);
+  }
+  let textPartsList = partsList.filter((value: any) => value.type == 'Text');
+  textPartsList.sort((a: any, b: any) => a.ord - b.ord);
+  for (let i = 0; i < textPartsList.length; i++) {
+    textPartsList[i].ord = i + 1;
+  }
+  let chordsPartsList = partsList.filter((value: any) => value.type == 'Chords');
+  chordsPartsList.sort((a: any, b: any) => a.ord - b.ord);
+  for (let i = 0; i < chordsPartsList.length; i++) {
+    chordsPartsList[i].ord = i + 1;
+  }
+  let chordsTextPartsList = partsList.filter((value: any) => value.type == 'ChordsText');
+  chordsTextPartsList.sort((a: any, b: any) => a.ord - b.ord);
+  for (let i = 0; i < chordsTextPartsList.length; i++) {
+    chordsTextPartsList[i].ord = i + 1;
+  }
+  songData.value.parts = textPartsList.concat(chordsPartsList).concat(chordsTextPartsList);
 }
 
 const saveFunction = functionsRefs.saveFunction;

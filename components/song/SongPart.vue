@@ -1,17 +1,34 @@
 <template>
-  <div ref="partDiv" class="my-5 bg-white p-3 w-full min-w-min">
-    <div class="text-xl border-b border-black font-bold" v-if="data.name || editMode">
-      <span v-if="!editMode">{{ data.name }}</span>
-      <input v-else type="text" class="w-full" v-model="data.name">
+  <div ref="partDiv" class="flex my-5 bg-white p-3 w-full min-w-min">
+    <div style="flex: 1 1 max-content; width: 100%;">
+      <div class="text-xl border-b border-black font-bold" v-if="data.name || editMode">
+        <span v-if="!editMode">{{ data.name }}</span>
+        <input v-else type="text" class="w-full" v-model="data.name">
+      </div>
+      <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" class="mb-1"/>
+      <div v-if="!editMode">
+        <pre class="text-base" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
+          toValue(getTransposedText(originalKey, keyShift))
+        }}</pre>
+      </div>
+      <div v-else>
+        <textarea ref="contentTextarea" v-model="data.data" class="w-full" :class="{ chords: data.type != 'Text' }"
+            @input="event => fitTextareaHeight(event.target)"></textarea>
+      </div>
     </div>
-    <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" class="mb-1"/>
-    <div v-if="!editMode">
-      <pre class="text-base" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
-        toValue(getTransposedText(originalKey, keyShift))
-      }}</pre>
-    </div>
-    <div v-else>
-      <textarea ref="contentTextarea" v-model="data.data" class="w-full" :class="{ chords: data.type != 'Text' }" @input="event => fitTextareaHeight(event.target)"></textarea>
+    <div v-if="editMode" style="flex: 0 1 2rem; margin-left: 1rem;">
+      <button class="block aspect-square w-8 my-2" 
+          @click="() => { $emit('updateOrder', { part: data, action: 'delete'}); }">
+        <img src="/assets/svg/cross2.svg"/>
+      </button>
+      <button v-if="data.ord > 1" class="block aspect-square w-8 my-2"
+          @click="() => { $emit('updateOrder', { part: data, action: 'up'}); }">
+        <img src="/assets/svg/arrow_up.svg"/>
+      </button>
+      <button class="block aspect-square w-8 my-2"
+          @click="() => { $emit('updateOrder', { part: data, action: 'down'}); }">
+        <img src="/assets/svg/arrow_down.svg"/>
+      </button>
     </div>
   </div>
 </template>
@@ -22,7 +39,7 @@ const { getCircleKeys, chordsTextToString, transposeChordsText, chordsTextFromPl
 import { fitTextareaHeight } from '~/utils/global';
 
 const props = defineProps(['data', 'generalKey']);
-defineEmits(['update:keyShift']);
+defineEmits(['updateOrder']);
 
 const editMode = useState('editMode');
 const keyShift = useState('keyShift', () => 0);
@@ -43,7 +60,7 @@ watch(shiftOriginalKey, (shift: any) => {
 });
 
 const view = useCookie('view');
-watch([editMode, view], () => {
+watch([editMode, () => props.data], () => {
   if (editMode.value) {
     setTimeout(() => {
       fitTextareaHeight(contentTextarea.value);
