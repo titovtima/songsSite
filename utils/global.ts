@@ -1,4 +1,5 @@
-import { getCircleKeys, chordsTextToString, transposeChordsText, changeChordsTextNotation, chordsTextFromPlainText } from "@titovtima/music-theory";
+import musicTheory from '@titovtima/music-theory';
+const { getCircleKeys, chordsTextToString, transposeChordsText, changeChordsTextNotation, chordsTextFromPlainText } = musicTheory;
 
 export function clone(object: any): any {
     if (typeof object != 'object') 

@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { fitTextareaHeight } from '~/utils/global';
+import { fitTextareaHeight, getTransposedText } from '~/utils/global';
 
 const props = defineProps(['data', 'generalKey']);
 defineEmits(['updateOrder']);

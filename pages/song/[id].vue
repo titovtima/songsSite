@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
-import { fitTextareaHeight } from "~/utils/global";
+import { fitTextareaHeight, getTransposedText } from "~/utils/global";
 
 const route = useRoute();
 const router = useRouter();
