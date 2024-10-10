@@ -39,7 +39,7 @@
 const changeFontSize: any = ref(null);
 const modal: any = ref(null);
 
-const props = defineProps(['show']);
+defineProps(['show']);
 const emit = defineEmits(['update:show']);
 
 // if (process.client) {
@@ -59,17 +59,7 @@ watch(showAuthInfo, () => {
 });
 watch(userData, () => { loggedIn.value = !!userData.value });
 
-if (process.client) {
-  let html = document.documentElement;
-  if (!settings.value) {
-    settings.value = {};
-  }
-  if (!settings.value.fontSize) {
-    settings.value.fontSize = parseInt(getComputedStyle(html, '').fontSize);
-  }
-  if (!settings.value.notation) {
-    settings.value.notation = 'English';
-  }
+if (import.meta.client) {
   notationInput.value = settings.value.notation;
   watch(notationInput, (value) => settings.value.notation = value);
   watch(() => settings.value.fontSize, () => {
@@ -84,7 +74,7 @@ if (settings.value) {
 let oncancel = () => {};
 let onconfirm = () => {};
 
-if (process.client) {
+if (import.meta.client) {
   let savedSettings = settings.value;
 
   oncancel = () => {
