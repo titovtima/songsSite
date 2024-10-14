@@ -13,24 +13,23 @@
 </template>
 
 <script setup lang="ts">
+import { getSettings } from '~/utils/global';
 const {isMobile} = useDevice();
 
 const plus: any = ref(null);
 const minus: any = ref(null);
 
-const settings: any = useCookie('settings', { path: '/' });
+const settings = getSettings();
 
 const maxFontSize = isMobile ? 30 : 48;
-if (process.client) {
-  onMounted(() => {
-    plus.value.onclick = () => {
-      settings.value.fontSize = Math.min(settings.value.fontSize + 2, maxFontSize);
-    }
-    minus.value.onclick = () => {
-      settings.value.fontSize = Math.max(settings.value.fontSize - 2, 6);
-    }
-  });
-}
+onMounted(() => {
+  plus.value.onclick = () => {
+    settings.value.fontSize = Math.min(settings.value.fontSize + 2, maxFontSize);
+  }
+  minus.value.onclick = () => {
+    settings.value.fontSize = Math.max(settings.value.fontSize - 2, 6);
+  }
+});
 </script>
 
 <style scoped>

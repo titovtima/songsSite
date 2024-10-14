@@ -8,13 +8,14 @@
 </template>
 
 <script setup lang="ts">
+import { getSettings } from '~/utils/global';
 import musicTheory from '@titovtima/music-theory';
 const { getCircleKeys, keyName } = musicTheory;
 
 const props = defineProps(['original']);
 const emit = defineEmits(['update:original']);
 
-const settings: any = useCookie('settings');
+const settings = getSettings();
 const editMode = useState('editMode');
 const keyShift = useState('keyShift', () => 0);
 const shiftOriginalKey = useState('shiftOriginalKey');

@@ -36,6 +36,8 @@
 </template>
 
 <script setup lang="ts">
+import { getSettings } from '~/utils/global';
+
 const changeFontSize: any = ref(null);
 const modal: any = ref(null);
 
@@ -46,7 +48,7 @@ const emit = defineEmits(['update:show']);
 //   document.cookie = "settings=kds; path=/; max-age=-1";
 // }
 
-const settings: any = useCookie('settings', {path: '/'});
+const settings = getSettings();
 const notationInput = ref('English');
 
 const showAuthInfo = ref(false);

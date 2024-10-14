@@ -38,6 +38,39 @@ export function getTransposedText(text: string, original: number, shift: number,
         reduceSpaces));
 }
 
+// export function setDefaultSettings() {
+//     let settings: any = useCookie('settings', {path: '/'});
+//     if (!settings.value) {
+//         settings.value = {};
+//     }
+//     if (!settings.value.notation) {
+//         settings.value.notation = 'English';
+//     }
+//     if (import.meta.client) {
+//         let html = document.documentElement;
+//         if (!settings.value.fontSize) {
+//             settings.value.fontSize = parseInt(getComputedStyle(html, '').fontSize);
+//         }
+//     } 
+// }
+
+export function getSettings(): Ref<any> {
+    let settings: any = useCookie('settings', {path: '/'});
+    if (!settings.value) {
+        settings.value = {};
+    }
+    if (!settings.value.notation) {
+        settings.value.notation = 'English';
+    }
+    if (import.meta.client) {
+        let html = document.documentElement;
+        if (!settings.value.fontSize) {
+            settings.value.fontSize = parseInt(getComputedStyle(html, '').fontSize);
+        }
+    } 
+    return settings;
+}
+
 export const functionsRefs = {
     saveFunction: ref(() => {}),
 }
