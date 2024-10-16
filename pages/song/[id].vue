@@ -57,8 +57,19 @@
       </div>
     </div>
     <div>
-      <audio controls v-for="audio in songData.audios" :src="apiRequests.apiUrl + '/audio/' + audio">аудио</audio>
+      <SongPerformance v-for="perf in songData.performances" :data="perf"
+          @delete="() => { songData.performances = songData.performances.filter((value: any) => value != perf); }"/>
+      <div v-if="editMode" style="margin: 1rem 0; padding: 0.5rem; background-color: #fff;"
+          @click="songData.performances.push(
+            {artist: {id: -1, name: 'Неизвестный исполнитель'},
+             songName: 'Название',
+             isMain: false,
+             isOriginal: false,
+             link: ''})">Добавить источник</div>
     </div>
+    <!-- <div>
+      <audio controls v-for="audio in songData.audios" :src="apiRequests.apiUrl + '/audio/' + audio">аудио</audio>
+    </div> -->
     <div>
       <pre v-if="!editMode" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
         toValue(songData).extra 

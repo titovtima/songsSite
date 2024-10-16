@@ -19,6 +19,24 @@ export function clone(object: any): any {
     }
 }
 
+export function cloneWithDepth(object: any, depth: number): any {
+    if (depth <= 0 || typeof object != 'object') 
+        return object;
+    if (object.isArray) {
+        let result = [];
+        for (let a of object) {
+            result.push(cloneWithDepth(a, depth - 1));
+        }
+        return result;
+    } else {
+        let result: any = {};
+        for (let f in object) {
+            result[f] = cloneWithDepth(object[f], depth - 1);
+        }
+        return result;
+    }
+}
+
 export function fitTextareaHeight(element: any) {
     element.style.height = 0;
     element.style.height = element.scrollHeight + 'px';

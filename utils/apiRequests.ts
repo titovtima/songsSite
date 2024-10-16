@@ -1,8 +1,8 @@
-import { clone } from "./global";
+import { cloneWithDepth } from "./global";
 
 const apiRequests = {
-    // apiUrl: 'https://songs.istokspb.org/api/v1',
-    apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
+    apiUrl: 'https://songs.istokspb.org/api/v1',
+    // apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
     tokenCookie: 'auth_token',
 
     baseRequest: async (url: string, config: RequestInit = {}) => {
@@ -49,7 +49,7 @@ const apiRequests = {
     authorizedRequest: async (url: string, config: RequestInit = {}) => {
         if (!useCookie(apiRequests.tokenCookie).value)
             return new Promise((resolve, reject) => reject({status: 401}));
-        let newConfig: any = clone(config);
+        let newConfig: any = cloneWithDepth(config, 1);
         if (!newConfig.headers)
             newConfig.headers = {};
         newConfig.headers['Authorization'] = 'Bearer ' + useCookie(apiRequests.tokenCookie).value;
@@ -118,7 +118,23 @@ const apiRequests = {
 
     getAllListsInfo: async () => {
         return apiRequests.optionallyAuthorizedRequest('/songs_lists/info');
-    }
+    },
+
+    getArtistsList: async () => {
+        return apiRequests.baseRequest('/artists');
+    },
+
+    getAudioLink: (uuid: string) => apiRequests.apiUrl + '/audio/' + uuid,
+
+    postAudio: async (file: File) => {
+        return apiRequests.authorizedRequest('/audio', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'audio/mpeg',
+            },
+            body: file,
+        });
+    },
 };
 
 export default apiRequests;
