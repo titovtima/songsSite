@@ -71,4 +71,9 @@ function getTransposedPartText(original: number, shift: number) {
 .chords {
   font-family: JBMusic, monospace;
 }
+
+textarea {
+  overflow-x: auto;
+  white-space: nowrap;
+}
 </style>

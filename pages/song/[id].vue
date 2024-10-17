@@ -67,9 +67,6 @@
              isOriginal: false,
              link: ''})">Добавить источник</div>
     </div>
-    <!-- <div>
-      <audio controls v-for="audio in songData.audios" :src="apiRequests.apiUrl + '/audio/' + audio">аудио</audio>
-    </div> -->
     <div>
       <pre v-if="!editMode" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
         toValue(songData).extra 
@@ -333,5 +330,10 @@ saveFunction.value = () => {
 
 .song-rights > div, .song-rights > input {
   background: #fff;
+}
+
+textarea {
+  overflow-x: auto;
+  white-space: nowrap;
 }
 </style>
