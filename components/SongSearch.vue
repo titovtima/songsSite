@@ -22,8 +22,11 @@ onMounted(() => {
         for (let part of song.parts) {
           if (part.data.toLowerCase().includes(word)) return true;
         }
+        for (let perf of song.performances) {
+          if (perf.songName && perf.songName.includes(word)) return true;
+        }
         return false;
-      }, true)
+      }, true);
     }).sort((song1: { name: string; }, song2: { name: string; }) => {
       if (song1.name < song2.name) return -1;
       if (song1.name > song2.name) return 1;
