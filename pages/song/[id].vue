@@ -21,18 +21,7 @@
         </button>
       </div>
     </div>
-    <div class="song-rights" v-if="songRights && editMode">
-      <label>Владелец:</label>
-      <input type="text" v-model="newSongRights.owner" :disabled="!editMode || (songRights.owner != userData.username && !userData.isAdmin)"/>
-      
-      <label>Редакторы:</label>
-      <StringsListInput v-if="editMode" v-model:list="newSongRights.writers"/>
-      <div v-else>{{ songRights.writers.join(',') }}</div>
-      
-      <label>Читатели:</label>
-      <StringsListInput v-if="editMode" v-model:list="newSongRights.readers"/>
-      <div v-else>{{ songRights.readers.join(',') }}</div>
-    </div>
+    <RightsView v-model:data="songRights" :owner="songOwner"/>
     <div v-if="songRights && editMode" class="flex mt-2">
       <label class="flex" style="align-items: center;">
         Приватная
@@ -89,18 +78,22 @@ const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
 const chordsTextTypeButton: any = ref(null);
 
-const songData: any = ref({parts: [], audios: []});
-const songRights: any = ref(null);
-const newSongRights: any = ref({owner: '', writers: [], readers: []});
+const songData: Ref<any> = ref({parts: [], audios: []});
+const songRights: Ref<any> = ref(null);
+const songOwner: Ref<string|null> = ref(null);
+provide('rights', songRights);
 const userData: any = useState('userData');
 const canEdit = useState('canEdit');
-watch(songRights, rights => {
-  newSongRights.value = rights;
-  apiRequests.checkAuthorized().then(() => {
-    canEdit.value = userData.value.isAdmin || userData.value.username == rights.owner ||
-      rights.writers.includes(userData.value.username);
-  }).catch(() => {});
+watch(songRights, (rights, oldRights) => {
+  if (oldRights == null) {
+    apiRequests.checkAuthorized().then(() => {
+      canEdit.value = userData.value.isAdmin || userData.value.username == rights.owner ||
+        rights.writers.includes(userData.value.username);
+    }).catch(() => {});
+    songOwner.value = rights.owner;
+  }
 });
+
 const view = useCookie('view', {path: '/song/'});
 if (!view.value)
   view.value = 'Text';
@@ -273,17 +266,17 @@ saveFunction.value = () => {
   if (numberSongId) {
     console.log('saving data', songData.value);
     apiRequests.postSong(songId, songData.value);
-    console.log('saving rights', newSongRights.value);
-    apiRequests.postSongRights(numberSongId, newSongRights.value);
+    console.log('saving rights', songRights.value);
+    apiRequests.postSongRights(numberSongId, songRights.value);
   } else if (songId == 'new') {
     console.log('saving data', songData.value);
     apiRequests.postSong(songId, songData.value)
       .then(response => {
         console.log(response);
         let newSongId = response.id;
-        newSongRights.value.songId = newSongId;
-        console.log('saving rights', newSongRights.value);
-        apiRequests.postSongRights(newSongId, newSongRights.value);
+        songRights.value.songId = newSongId;
+        console.log('saving rights', songRights.value);
+        apiRequests.postSongRights(newSongId, songRights.value);
         router.push('/song/' + newSongId);
       });
   } else {
@@ -317,19 +310,6 @@ saveFunction.value = () => {
   .header {
     @apply text-2xl;
   }
-}
-
-.song-rights {
-  display: grid;
-  grid-template-columns: max-content auto;
-}
-
-.song-rights > * {
-  margin-top: 0.5rem;
-}
-
-.song-rights > div, .song-rights > input {
-  background: #fff;
 }
 
 textarea {
