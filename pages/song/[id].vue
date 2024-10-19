@@ -265,7 +265,8 @@ saveFunction.value = () => {
   let numberSongId = Number(songId);
   if (numberSongId) {
     console.log('saving data', songData.value);
-    apiRequests.postSong(songId, songData.value);
+    apiRequests.postSong(songId, songData.value)
+      .then(() => apiRequests.getSong(numberSongId).then(response => songData.value = response));
     console.log('saving rights', songRights.value);
     apiRequests.postSongRights(numberSongId, songRights.value);
   } else if (songId == 'new') {
