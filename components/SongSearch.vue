@@ -23,7 +23,7 @@ onMounted(() => {
           if (part.data.toLowerCase().includes(word)) return true;
         }
         for (let perf of song.performances) {
-          if (perf.songName && perf.songName.includes(word)) return true;
+          if (perf.songName && perf.songName.toLowerCase().includes(word)) return true;
         }
         return false;
       }, true);
