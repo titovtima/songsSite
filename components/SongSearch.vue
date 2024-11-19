@@ -3,6 +3,8 @@
 </template>
 
 <script setup lang="ts">
+import { findWordsInSong } from '~/utils/global';
+
 const searchInput: any = ref(null);
 const searchValue = ref('');
 
@@ -15,19 +17,8 @@ onMounted(() => {
     if (!searchInput.value || searchValue.value == '')
       emits('displayList', props.searchList);
     let searchArr = searchValue.value.split(/[^\p{L}]/gu).filter(w => w.length > 0);
-    emits('displayList', props.searchList.filter((song: any) => {
-      return searchArr.reduce((acc: boolean, word: string) => {
-        if (!acc) return false;
-        if (song.name.toLowerCase().includes(word)) return true;
-        for (let part of song.parts) {
-          if (part.data.toLowerCase().includes(word)) return true;
-        }
-        for (let perf of song.performances) {
-          if (perf.songName && perf.songName.toLowerCase().includes(word)) return true;
-        }
-        return false;
-      }, true);
-    }).sort((song1: { name: string; }, song2: { name: string; }) => {
+    emits('displayList', props.searchList.filter((song: any) => findWordsInSong(searchArr, song))
+        .sort((song1: { name: string; }, song2: { name: string; }) => {
       if (song1.name < song2.name) return -1;
       if (song1.name > song2.name) return 1;
       else return 0;

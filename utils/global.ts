@@ -89,6 +89,25 @@ export function getSettings(): Ref<any> {
     return settings;
 }
 
+export function findInSong(search: string, song: any): boolean {
+    let words = search.split(/[^\p{L}]/gu).filter(w => w.length > 0)
+    return findWordsInSong(words, song);
+} 
+
+export function findWordsInSong(words: any[], song: any): boolean {
+    return words.reduce((acc: boolean, word: string) => {
+        if (!acc) return false;
+        if (song.name.toLowerCase().includes(word)) return true;
+        for (let part of song.parts) {
+            if (part.data.toLowerCase().includes(word)) return true;
+        }
+        for (let perf of song.performances) {
+            if (perf.songName && perf.songName.toLowerCase().includes(word)) return true;
+        }
+        return false;
+    }, true);
+} 
+
 export const functionsRefs = {
     saveFunction: ref(() => {}),
 }

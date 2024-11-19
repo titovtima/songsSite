@@ -104,6 +104,10 @@ const apiRequests = {
         return apiRequests.optionallyAuthorizedRequest('/songs/info');
     },
 
+    getAllSongs: async () => {
+        return apiRequests.optionallyAuthorizedRequest('/songs');
+    },
+
     getListInfo: async (listId: number) => {
         return apiRequests.optionallyAuthorizedRequest('/songs_list/' + listId + '/info');
     },
@@ -114,6 +118,20 @@ const apiRequests = {
 
     getListData: async (listId: number) => {
         return apiRequests.optionallyAuthorizedRequest('/songs_list/' + listId);
+    },
+
+    postListData: async (listId: string, data: any) => {
+        return apiRequests.authorizedRequest('/songs_list/' + listId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        })
+    },
+
+    getListRights: async (listId: number) => {
+        return apiRequests.optionallyAuthorizedRequest('/songs_list/' + listId + '/rights');
     },
 
     getAllListsInfo: async () => {
