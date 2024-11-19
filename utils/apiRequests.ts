@@ -27,7 +27,7 @@ const apiRequests = {
                 },
                 body: JSON.stringify({ username: username, password: password }),
             });
-            document.cookie = apiRequests.tokenCookie + '=' + response.token + '; path=/';
+            document.cookie = apiRequests.tokenCookie + '=' + response.token + '; path=/; max-age=' + 3600*24*365*100;
             return apiRequests.checkAuthorized();;
         }
         catch(err) {
