@@ -22,11 +22,7 @@
         </label>
       </div>
     </div>
-    <a href="https://songs.titovtima.ru/"
-       class="block bg-gray-100 px-[5px] h-[75px] leading-[75px] overflow-y-hidden overflow-x-auto whitespace-nowrap">
-      Перейти на старую версию
-    </a>
-    <div class="bg-gray-200 px-[5px] h-[75px] leading-[75px] overflow-y-hidden overflow-x-auto whitespace-nowrap"
+    <div class="bg-gray-100 px-[5px] h-[75px] leading-[75px] overflow-y-hidden overflow-x-auto whitespace-nowrap cursor-pointer"
         @click="oncancel(); $emit('update:show', false); showAuthInfo = true;">
       <div v-if="loggedIn">{{ userData.username }}</div>
       <div v-else>Войти в аккаунт</div>
