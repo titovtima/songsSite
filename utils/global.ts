@@ -106,7 +106,15 @@ export function findWordsInSong(words: any[], song: any): boolean {
         }
         return false;
     }, true);
-} 
+}
+
+export function sortSongs(list: {name: string}[]): any[] {
+    return list.sort((song1: { name: string; }, song2: { name: string; }) => {
+        if (song1.name < song2.name) return -1;
+        if (song1.name > song2.name) return 1;
+        else return 0;
+    });
+}
 
 export const functionsRefs = {
     saveFunction: ref(() => {}),

@@ -10,7 +10,7 @@
         <option v-for="song of chooseAddSongList">{{ song.name }}</option>
       </datalist>
     </div>
-    <SongList :list="toValue(displayList)" :nav-list="route.params.id" class="mt-5"
+    <SongList :list="() => displayList" :nav-list="route.params.id" class="mt-5"
       @remove="song => {songsData = songsData.filter(s => s.id != song.id); songsInfo = songsInfo.filter(s => s.id != song.id)}"/>
   </div>
 </template>
@@ -25,6 +25,7 @@ const listInfo: Ref<any> = ref(null);
 const songsInfo: Ref<Array<any>> = ref([]);
 const songsData: Ref<Array<any>> = ref([]);
 const allSongsData: Ref<Array<any>> = ref([]);
+provide('allSongsData', allSongsData);
 const searchedList: any = ref(null);
 const listIdInt = Number(route.params.id);
 const displayList = computed(() => {
