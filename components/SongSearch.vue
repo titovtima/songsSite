@@ -4,7 +4,9 @@
         v-model="searchValue">
     <SongList :list="displayList"/>
     <div :style="{ display: allSongsDisplayList.length > 0 ? 'block' : 'none'}" style="height: 2px; background: #888; width: 100%;"></div>
-    <i :style="{ display: allSongsDisplayList.length > 0 ? 'block' : 'none'}" style="color: #888;">Из других списков</i>
+    <i :style="{ display: allSongsDisplayList.length > 0 ? 'block' : 'none'}" style="color: #888;">
+      {{ globalSearchHeader ? globalSearchHeader : 'Из других списков' }}
+    </i>
     <SongList :list="allSongsDisplayList"/>
   </div>
 </template>
@@ -15,7 +17,7 @@ import { findWordsInSong, sortSongs } from '~/utils/global';
 const searchInput: any = ref(null);
 const searchValue = ref('');
 
-const props = defineProps(['searchList']);
+const props = defineProps(['searchList', 'globalSearchHeader']);
 
 const displayList: ComputedRef<Array<any>> = computed(() => {
   if (!searchInput.value || searchValue.value == '') return sortSongs(toValue(props.searchList));
