@@ -81,15 +81,19 @@ onMounted(() => {
 });
 
 const artistInput: Ref<any> = ref(null);
+let artistInputTimeout = setTimeout(() => {}, 1);
 function parseArtistInput() {
-  artistInput.value.size = artistInput.value.value.length + 1;
-  let name = artistInput.value.value.trim();
-  let artist = artistsList.find(value => value.name == name);
-  if (artist) {
-    props.data.artist = artist;
-  } else {
-    props.data.artist = {id: -1, name: name};
-  }
+  clearTimeout(artistInputTimeout);
+  artistInputTimeout = setTimeout(() => {
+    artistInput.value.size = artistInput.value.value.length + 1;
+    let name = artistInput.value.value.trim();
+    let artist = artistsList.find(value => value.name == name);
+    if (artist) {
+      props.data.artist = artist;
+    } else {
+      props.data.artist = {id: -1, name: name};
+    }
+  }, 5000);
 }
 </script>
 
