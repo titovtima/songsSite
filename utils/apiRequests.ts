@@ -1,7 +1,7 @@
-import { cloneWithDepth } from "./global";
+import { cloneWithDepth, getHost } from "./global";
 
 const apiRequests = {
-    apiUrl: 'https://songs.istokspb.org/api/v1',
+    apiUrl: 'https://' + getHost() + '/api/v1',
     // apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
     tokenCookie: 'auth_token',
 
@@ -10,7 +10,7 @@ const apiRequests = {
         try {
             response = await fetch(apiRequests.apiUrl + url, config);
         } catch (err) {
-            return new Promise((resolve, reject) => reject('Fetch error'));
+            return new Promise((resolve, reject) => reject('Fetch error:\n' + err));
         }
         if (response.ok) {
             return response.json().catch(() => {});
