@@ -151,7 +151,6 @@ if (songId == 'new') {
   });
 } else {
   try {
-    await apiRequests.checkAuthorized();
     songData.value = await apiRequests.getSong(Number(songId));
   } catch (e) {
     throw createError({
