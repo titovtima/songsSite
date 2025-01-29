@@ -1,7 +1,7 @@
 <template>
   <div>
     <a v-if="isAuthorised" href="/song/new?edit=true" class="block mb-2">+ добавить песню</a>
-    <SongSearch :search-list="() => mainListData" global-search-header="Детские"/>
+    <SongSearch :search-list="mainListData" global-search-header="Детские"/>
     <!-- <SongList :list="toValue(displayList)" class="mt-5"/> -->
   </div>
 </template>

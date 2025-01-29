@@ -10,7 +10,7 @@
         <option v-for="song of chooseAddSongList">{{ song.name }}</option>
       </datalist>
     </div>
-    <SongList :list="() => displayList" :nav-list="route.params.id" class="mt-5"
+    <SongList :list="displayList" :nav-list="route.params.id" class="mt-5"
       @remove="song => {songsData = songsData.filter(s => s.id != song.id); songsInfo = songsInfo.filter(s => s.id != song.id)}"/>
   </div>
 </template>
