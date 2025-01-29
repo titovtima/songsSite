@@ -2,7 +2,8 @@
   <div>
     <h1 class="header">{{ listInfo ? listInfo.name : 'Список песен' }}</h1>
     <RightsView style="margin-bottom: 1rem;" :owner="listRights ? listRights.owner : null" />
-    <SongSearch :search-list="songsData"/>
+    <SongSearch :search-list="songsData"
+      @remove-song="song => {songsData = songsData.filter(s => s.id != song.id); songsInfo = songsInfo.filter(s => s.id != song.id)}"/>
     <div style="display: flex; margin-top: 1rem;" v-if="editMode">
       <span style="flex: 0 1 max-content; cursor: pointer; margin-right: 1rem;" ref="addSongClick">+ добавить песню</span>
       <input style="flex: 1 1 max-content; padding: 0 0.5rem;" ref="addSongInput" type="text" list="add-song-list">
