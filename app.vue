@@ -26,6 +26,8 @@ body {
   background: #F4F4F4;
   height: 100vh;
   overflow: hidden;
+  --bg-color: #f4f4f4;
+  --second-color: #fff;
 }
 
 #__nuxt {

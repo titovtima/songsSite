@@ -10,7 +10,7 @@
         детские
       </li>
       <li v-if="canEdit">
-        <span v-if="editMode" @click="() => { saveFunction(); editMode = false; }">сохранить</span>
+        <span v-if="editMode" @click="() => { saveFunction(); }">сохранить</span>
         <span v-else @click="() => { editMode = true; }">редактировать</span>
       </li>
     </ul>

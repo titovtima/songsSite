@@ -1,8 +1,11 @@
 <template>
-  <div class="rootDiv">
+  <div class="rootDiv" style="margin: 1rem 0; padding: 0.5rem; background-color: #fff;">
     <div v-if="!editMode">
       <div v-if="data.isOriginal || data.isMain"><b>{{ (data.isOriginal) ? 'Оригинал' : 'Источник' }}</b></div>
-      <div><span>{{ data.artist ? data.artist.name : 'Неизвестный исполнитель' }}</span> - <span>{{ data.songName }}</span></div>
+      <div>
+        <span>{{ (data.artists && data.artists.length > 0) ? data.artists.map((a: any) => a.name).join(', ') : 'Неизвестный исполнитель' }}</span> - 
+        <span>{{ data.songName }}</span>
+      </div>
       <a v-if="data.link" :href="data.link" style="color: rgb(0, 102, 204);">{{ data.link }}</a>
       <audio controls v-if="data.audio" :src="apiRequests.getAudioLink(data.audio)"></audio>
     </div>
@@ -16,14 +19,31 @@
           <input type="checkbox" v-model="data.isMain">
           <span style="margin-left: 0.5rem;">источник</span>
         </label>
-        <div>
+        <!-- <div>
+          <div style="display: flex; margin: 0.5rem 0">
+            <span style="flex: 0 1 min-content; align-self: center;">Исполнитель:</span>
+            <span style="flex: 1 1 min-content">
+              <StringsListInput v-model:list="artistsNamesList" allow-spaces @update:list="parseArtistInput()"/>
+            </span>
+          </div>
           <input ref="artistInput" type="text" style="min-width: 7rem;" placeholder="исполнитель" :value="data.artist.name"
               @input="parseArtistInput"/>
-          <span> - </span>
-          <input type="text" placeholder="название" v-model="data.songName" style="min-width: 5rem;"
-              @input="(e: any) => { e.target.size = e.target.value.length + 1 }"/>
+          <div>
+            Название:
+            <input type="text" placeholder="название" v-model="data.songName" style="min-width: 5rem; background-color: var(--second-color);"
+                @input="(e: any) => { e.target.size = e.target.value.length + 1 }"/>
+          </div>
         </div>
-        <input style="display: block; width: 100%;" type="text" placeholder="ссылка" v-model="data.link"/>
+        <input style="display: block; width: 100%; margin: 0.5rem 0; background-color: var(--second-color);" type="text" placeholder="ссылка" v-model="data.link"/> -->
+        <div style="display: grid; grid-template-columns: max-content auto; row-gap: 0.5rem; padding-bottom: 0.5rem;">
+          <span style="align-self: center;">Исполнитель:</span>
+          <StringsListInput v-model:list="artistsNamesList" allow-spaces @update:list="parseArtistInput()"/>
+          <span style="align-self: center;">Название:</span>
+          <input type="text" placeholder="название" v-model="data.songName" style="min-width: 5rem; background-color: var(--second-color);"
+                @input="(e: any) => { e.target.size = e.target.value.length + 1 }"/>
+          <span style="align-self: center;">Ссылка:</span>
+          <input style="display: block; width: 100%; background-color: var(--second-color);" type="text" placeholder="ссылка" v-model="data.link"/>
+        </div>
         <input ref="loadFile" name="file" type="file" accept="audio/mpeg"/>
         <audio ref="audioInEdit" controls></audio>
       </div>
@@ -47,10 +67,13 @@ const loadFile: Ref<any> = ref(null);
 const formLoadingFile: Ref<any> = ref(null);
 const audioInEdit: Ref<any> = ref(null);
 
-let artistsList: any[] = [];
+const artistsNamesList: Ref<string[]> = ref(props.data.artists.map((a: any) => a.name));
+// watch(() => props.data, () => { artistsNamesList.value = props.data.artists.map((a: any) => a.name); });
+
+let allArtistsList: any[] = [];
 
 apiRequests.getArtistsList().then(response => {
-  artistsList = response;
+  allArtistsList = response;
 });
 
 onMounted(() => {
@@ -80,28 +103,29 @@ onMounted(() => {
   }, {immediate: true});
 });
 
-const artistInput: Ref<any> = ref(null);
+// const artistInput: Ref<any> = ref(null);
 let artistInputTimeout = setTimeout(() => {}, 1);
 function parseArtistInput() {
   clearTimeout(artistInputTimeout);
   artistInputTimeout = setTimeout(() => {
-    artistInput.value.size = artistInput.value.value.length + 1;
-    let name = artistInput.value.value.trim();
-    let artist = artistsList.find(value => value.name == name);
-    if (artist) {
-      props.data.artist = artist;
-    } else {
-      props.data.artist = {id: -1, name: name};
-    }
+    let artists: any[] = [];
+    artistsNamesList.value.forEach(name => {
+      let artist = allArtistsList.find(value => value.name == name);
+      if (artist) {
+        artists.push(artist);
+      } else {
+        artists.push({id: -1, name: name});
+      }
+    });
+    props.data.artists = artists;
   }, 5000);
 }
 </script>
 
 <style scoped>
 .rootDiv {
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background-color: #fff;
+  --bg-color: #fff;
+  --second-color: #f4f4f4;
 }
 
 input {

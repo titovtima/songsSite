@@ -3,11 +3,11 @@
     <label>Владелец:</label>
     <input type="text" v-model="data.owner" :disabled="!editMode || (owner != userData.username && !userData.isAdmin)"/>
     
-    <label>Редакторы:</label>
+    <label style="align-self: center;">Редакторы:</label>
     <StringsListInput v-if="editMode" v-model:list="data.writers"/>
     <div v-else>{{ data.writers.join(',') }}</div>
     
-    <label>Читатели:</label>
+    <label style="align-self: center;">Читатели:</label>
     <StringsListInput v-if="editMode" v-model:list="data.readers"/>
     <div v-else>{{ data.readers.join(',') }}</div>
   </div>

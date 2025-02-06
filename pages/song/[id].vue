@@ -50,8 +50,9 @@
           @delete="() => { songData.performances = songData.performances.filter((value: any) => value != perf); }"/>
       <div v-if="editMode" style="margin: 1rem 0; padding: 0.5rem; background-color: #fff;"
           @click="songData.performances.push(
-            {artist: {id: -1, name: 'Неизвестный исполнитель'},
-             songName: 'Название',
+            {id: -1,
+             artists: [],
+             songName: songData.name,
              isMain: false,
              isOriginal: false,
              link: ''})">Добавить источник</div>
@@ -266,7 +267,8 @@ saveFunction.value = () => {
   if (numberSongId) {
     console.log('saving data', songData.value);
     apiRequests.postSong(songId, songData.value)
-      .then(() => apiRequests.getSong(numberSongId).then(response => songData.value = response));
+      .then(() => apiRequests.getSong(numberSongId).then(response => { songData.value = response; editMode.value = false; }))
+      .catch(() => { alert('Не удалось сохранить песню'); });
     console.log('saving rights', songRights.value);
     apiRequests.postSongRights(numberSongId, songRights.value);
   } else if (songId == 'new') {
@@ -279,6 +281,9 @@ saveFunction.value = () => {
         console.log('saving rights', songRights.value);
         apiRequests.postSongRights(newSongId, songRights.value);
         router.push('/song/' + newSongId);
+      })
+      .catch(() => {
+        alert('Не удалось сохранить песню');
       });
   } else {
     alert('Wrong song id');
