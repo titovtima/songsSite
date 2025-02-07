@@ -23,17 +23,15 @@ const localList: Ref<string[]> = ref(props.list ? props.list : []);
 
 function keydown(event: any) {
   let elem: any = event.target;
-  if (event.code == 'Enter' || (event.code == 'Space' && !props.allowSpaces)) {
+  if (event.key == 'Enter' || (event.key == 'Space' && !props.allowSpaces)) {
     event.preventDefault();
-  // if (elem.textContent.length > 0 && elem.textContent.at(-1).trim().length == 0) {
-    // let string: string = elem.textContent.slice(0, -1);
     let string: string = elem.textContent.trim();
     if (!localList.value.includes(string)) {
       localList.value.push(string);
       emit('update:list', localList.value);
     }
     elem.textContent = '';
-  } else if (event.code == 'Backspace') {
+  } else if (event.key == 'Backspace') {
     if (elem.textContent.length == 0 && localList.value.length > 0 && !event.repeat) {
       localList.value.pop();
       emit('update:list', localList.value);
