@@ -79,7 +79,7 @@ const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
 const chordsTextTypeButton: any = ref(null);
 
-const songData: Ref<any> = ref({parts: [], audios: []});
+const songData: Ref<any> = ref({parts: []});
 const songRights: Ref<any> = ref(null);
 const songOwner: Ref<string|null> = ref(null);
 provide('rights', songRights);
@@ -131,7 +131,6 @@ if (songId == 'new') {
   songData.value = {
     name: 'Новая песня',
     parts: [],
-    audios: [],
     performances: [],
     key: null,
     public: false,
