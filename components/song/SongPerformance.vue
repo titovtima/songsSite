@@ -19,22 +19,6 @@
           <input type="checkbox" v-model="data.isMain">
           <span style="margin-left: 0.5rem;">источник</span>
         </label>
-        <!-- <div>
-          <div style="display: flex; margin: 0.5rem 0">
-            <span style="flex: 0 1 min-content; align-self: center;">Исполнитель:</span>
-            <span style="flex: 1 1 min-content">
-              <StringsListInput v-model:list="artistsNamesList" allow-spaces @update:list="parseArtistInput()"/>
-            </span>
-          </div>
-          <input ref="artistInput" type="text" style="min-width: 7rem;" placeholder="исполнитель" :value="data.artist.name"
-              @input="parseArtistInput"/>
-          <div>
-            Название:
-            <input type="text" placeholder="название" v-model="data.songName" style="min-width: 5rem; background-color: var(--second-color);"
-                @input="(e: any) => { e.target.size = e.target.value.length + 1 }"/>
-          </div>
-        </div>
-        <input style="display: block; width: 100%; margin: 0.5rem 0; background-color: var(--second-color);" type="text" placeholder="ссылка" v-model="data.link"/> -->
         <div style="display: grid; grid-template-columns: max-content auto; row-gap: 0.5rem; padding-bottom: 0.5rem;">
           <span style="align-self: center;">Исполнитель:</span>
           <StringsListInput v-model:list="artistsNamesList" allow-spaces @update:list="parseArtistInput()"/>
@@ -68,7 +52,6 @@ const formLoadingFile: Ref<any> = ref(null);
 const audioInEdit: Ref<any> = ref(null);
 
 const artistsNamesList: Ref<string[]> = ref(props.data.artists.map((a: any) => a.name));
-// watch(() => props.data, () => { artistsNamesList.value = props.data.artists.map((a: any) => a.name); });
 
 let allArtistsList: any[] = [];
 
@@ -103,7 +86,6 @@ onMounted(() => {
   }, {immediate: true});
 });
 
-// const artistInput: Ref<any> = ref(null);
 let artistInputTimeout = setTimeout(() => {}, 1);
 function parseArtistInput() {
   clearTimeout(artistInputTimeout);

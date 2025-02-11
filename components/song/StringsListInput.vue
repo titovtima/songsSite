@@ -19,7 +19,6 @@ const props = defineProps({
 const emit = defineEmits(['update:list']);
 
 const localList: Ref<string[]> = ref(props.list ? props.list : []);
-// watch(() => props.list, () => { localList.value = props.list ? props.list : []; });
 
 function keydown(event: any) {
   let elem: any = event.target;
