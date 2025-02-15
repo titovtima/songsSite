@@ -53,6 +53,13 @@
             {id: -1,
              artists: [],
              songName: songData.name,
+             extra: null,
+             album: null,
+             lang: null,
+             date: null,
+             key: null,
+             bpm: null,
+             ord: songData.performances.length,
              isMain: false,
              isOriginal: false,
              link: ''})">Добавить источник</div>

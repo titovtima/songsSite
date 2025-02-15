@@ -8,6 +8,10 @@
       </div>
       <a v-if="data.link" :href="data.link" style="color: rgb(0, 102, 204);">{{ data.link }}</a>
       <audio controls v-if="data.audio" :src="apiRequests.getAudioLink(data.audio)"></audio>
+      <div v-if="data.lang">Язык: {{ (langNames as any)[data.lang] }}</div>
+      <div v-if="data.date">Дата: {{ data.date }}</div>
+      <div v-if="data.key">Тональность: {{ musicTheory.keyName(musicTheory.getCircleKeys()[data.key % 24]) }}</div>
+      <div v-if="data.bpm">Темп: {{ data.bpm }}</div>
     </div>
     <div v-else style="display: flex;">
       <div style="flex: 1 1 max-content; width: 100%;">
@@ -20,16 +24,38 @@
           <span style="margin-left: 0.5rem;">источник</span>
         </label>
         <div style="display: grid; grid-template-columns: max-content auto; row-gap: 0.5rem; padding-bottom: 0.5rem;">
-          <span style="align-self: center;">Исполнитель:</span>
+          <label style="align-self: center;">Исполнитель:</label>
           <StringsListInput v-model:list="artistsNamesList" allow-spaces @update:list="parseArtistInput()"/>
-          <span style="align-self: center;">Название:</span>
-          <input type="text" placeholder="название" v-model="data.songName" style="min-width: 5rem; background-color: var(--second-color);"
+          <label style="align-self: center;">Название:</label>
+          <input type="text" v-model="data.songName" style="min-width: 5rem; background-color: var(--second-color);"
                 @input="(e: any) => { e.target.size = e.target.value.length + 1 }"/>
-          <span style="align-self: center;">Ссылка:</span>
+          <label>Альбом:</label>
+          <input type="text" v-model="data.album" style="min-width: 5rem; background-color: var(--second-color);"
+                @input="(e: any) => { e.target.size = e.target.value.length + 1 }"/>
+          <label style="align-self: center;">Ссылка:</label>
           <input style="display: block; width: 100%; background-color: var(--second-color);" type="text" placeholder="ссылка" v-model="data.link"/>
         </div>
         <input ref="loadFile" name="file" type="file" accept="audio/mpeg"/>
         <audio ref="audioInEdit" controls></audio>
+        <div style="display: grid; grid-template-columns: max-content auto; row-gap: 0.5rem; margin-top: 0.5rem;">
+          <label>Язык:</label>
+          <div>
+            <select v-model="data.lang" style="background-color: var(--second-color);">
+              <option></option>
+              <option v-for="lang of langList">{{ lang }}</option>
+            </select>
+            <!-- <input v-model="data.lang" list="datalistLang" style="background-color: var(--second-color);"/>
+            <datalist id="datalistLang">
+              <option v-for="lang of langList">{{ lang }}</option>
+            </datalist> -->
+          </div>
+          <label>Дата:</label>
+          <input v-model="data.date" style="background-color: var(--second-color);"/>
+          <label>Тональность:</label>
+          <KeySwitch v-model:original="data.key"/>
+          <label>Темп:</label>
+          <input type="number" v-model="data.bpm" style="background-color: var(--second-color);"/>
+        </div>
       </div>
       <div style="flex: 0 1 2rem; margin-left: 1rem;">
         <button class="block aspect-square w-8 my-2" 
@@ -42,6 +68,8 @@
 </template>
 
 <script setup lang="ts">
+import musicTheory from '@titovtima/music-theory';
+
 const props = defineProps(['data']);
 defineEmits(['delete']);
 
@@ -50,6 +78,10 @@ const editMode = useState('editMode');
 const loadFile: Ref<any> = ref(null);
 const formLoadingFile: Ref<any> = ref(null);
 const audioInEdit: Ref<any> = ref(null);
+
+const langNames = { 'rus': 'русский', 'eng': 'английский', 'fin': 'финский', 'swe': 'шведский' };
+const langList: string[] = [];
+for (let lang in langNames) langList.push(lang);
 
 const artistsNamesList: Ref<string[]> = ref(props.data.artists.map((a: any) => a.name));
 
