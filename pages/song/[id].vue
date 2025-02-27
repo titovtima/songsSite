@@ -3,23 +3,17 @@
     <h1 class="header" :contenteditable="editMode" @input="(event: any) => { songData.name = event.target.textContent; }">
       {{ songData.name ? songData.name : '' }}
     </h1>
-    <div>
-      <div class="type-button-wrap">
-        <button class="type-button" ref="textTypeButton"
-                :class="{ active: view == 'Text', hidden: toValue(textParts).length == 0 && !editMode }">Текст
-        </button>
-      </div>
-      <div class="type-button-wrap">
-        <button class="type-button" ref="chordsTypeButton"
-                :class="{ active: view == 'Chords', hidden: toValue(chordsParts).length == 0 && !editMode }">Аккорды
-        </button>
-      </div>
-      <div class="type-button-wrap">
-        <button class="type-button" ref="chordsTextTypeButton"
-                :class="{ active: view == 'ChordsText', hidden: toValue(chordsTextParts).length == 0 && !editMode }">
-          Аккорды в тексте
-        </button>
-      </div>
+    <div style="display: flex; justify-content: center;">
+      <button class="type-button" ref="textTypeButton" style="flex: 1 0 0; margin: 0 0.5rem;"
+              :class="{ active: view == 'Text', hidden: toValue(textParts).length == 0 && !editMode }">Текст
+      </button>
+      <button class="type-button" ref="chordsTypeButton" style="flex: 1 0 0; margin: 0 0.5rem;"
+              :class="{ active: view == 'Chords', hidden: toValue(chordsParts).length == 0 && !editMode }">Аккорды
+      </button>
+      <button class="type-button" ref="chordsTextTypeButton" style="flex: 1 0 0; margin: 0 0.5rem;"
+              :class="{ active: view == 'ChordsText', hidden: toValue(chordsTextParts).length == 0 && !editMode }">
+        Аккорды в тексте
+      </button>
     </div>
     <RightsView v-model:data="songRights" :owner="songOwner"/>
     <div v-if="songRights && editMode" class="flex mt-2">
@@ -33,6 +27,7 @@
         <input class="mx-1" type="checkbox" :disabled="!editMode" v-model="songData.inMainList"/>
       </label>
     </div>
+    <div v-else-if="songRights && !songData.public">Приватная</div>
     <KeySwitch v-if="songData.key != null || editMode" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
@@ -47,7 +42,7 @@
     </div>
     <div>
       <SongPerformance v-for="perf in songData.performances" :data="perf"
-          @delete="() => { songData.performances = songData.performances.filter((value: any) => value != perf); }"/>
+          @update-order="(event) => { updatePerformancesOrder(event); }"/>
       <div v-if="editMode" style="margin: 1rem 0; padding: 0.5rem; background-color: #fff;"
           @click="songData.performances.push(
             {id: -1,
@@ -59,7 +54,7 @@
              date: null,
              key: null,
              bpm: null,
-             ord: songData.performances.length,
+             ord: songData.performances.length + 1,
              isMain: false,
              isOriginal: false,
              link: ''})">Добавить источник</div>
@@ -165,6 +160,8 @@ if (songId == 'new') {
       statusMessage: 'Песня не найдена'
     });
   }
+  songData.value.performances.sort((p1: any, p2: any) => p1.ord - p2.ord);
+  songData.value.parts.sort((p1: any, p2: any) => p1.ord - p2.ord);
 
   apiRequests.getSongRights(Number(songId))
     .then(response => {
@@ -267,6 +264,22 @@ function updatePartsOrder(event: any) {
   songData.value.parts = textPartsList.concat(chordsPartsList).concat(chordsTextPartsList);
 }
 
+function updatePerformancesOrder(event: any) {
+  let perfList = songData.value.performances.filter((value: any) => value.ord != event.perf.ord)
+  if (event.action == 'up') {
+    event.perf.ord -= 1.5;
+    perfList.push(event.perf);
+  } else if (event.action == 'down') {
+    event.perf.ord += 1.5;
+    perfList.push(event.perf);
+  }
+  perfList.sort((a: any, b: any) => a.ord - b.ord);
+  for (let i = 0; i < perfList.length; i++) {
+    perfList[i].ord = i + 1;
+  }
+  songData.value.performances = perfList;
+}
+
 const saveFunction = functionsRefs.saveFunction;
 saveFunction.value = () => {
   let numberSongId = Number(songId);
@@ -299,7 +312,7 @@ saveFunction.value = () => {
 
 <style scoped>
 .type-button {
-  @apply p-3 bg-white inline-block w-[90%];
+  @apply p-3 bg-white inline-block;
 }
 
 .type-button.hidden {
@@ -308,10 +321,6 @@ saveFunction.value = () => {
 
 .type-button.active {
   @apply border-black border font-bold;
-}
-
-.type-button-wrap {
-  @apply w-1/3 inline-block text-center;
 }
 
 .header {

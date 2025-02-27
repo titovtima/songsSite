@@ -6,12 +6,14 @@
         <span>{{ (data.artists && data.artists.length > 0) ? data.artists.map((a: any) => a.name).join(', ') : 'Неизвестный исполнитель' }}</span> - 
         <span>{{ data.songName }}</span>
       </div>
+      <div v-if="data.album">Альбом: {{ data.album }}<span v-if="data.date">({{ data.date }})</span></div>
+      <div v-else-if="data.date">Дата: {{ data.date }}</div>
       <a v-if="data.link" :href="data.link" style="color: rgb(0, 102, 204);">{{ data.link }}</a>
       <audio controls v-if="data.audio" :src="apiRequests.getAudioLink(data.audio)"></audio>
-      <div v-if="data.lang">Язык: {{ (langNames as any)[data.lang] }}</div>
-      <div v-if="data.date">Дата: {{ data.date }}</div>
+      <div v-if="data.lang && data.lang != 'rus'">Язык: {{ (langNames as any)[data.lang] }}</div>
       <div v-if="data.key">Тональность: {{ musicTheory.keyName(musicTheory.getCircleKeys()[data.key % 24]) }}</div>
       <div v-if="data.bpm">Темп: {{ data.bpm }}</div>
+      <pre v-if="data.extra">{{ data.extra }}</pre>
     </div>
     <div v-else style="display: flex;">
       <div style="flex: 1 1 max-content; width: 100%;">
@@ -44,10 +46,6 @@
               <option></option>
               <option v-for="lang of langList">{{ lang }}</option>
             </select>
-            <!-- <input v-model="data.lang" list="datalistLang" style="background-color: var(--second-color);"/>
-            <datalist id="datalistLang">
-              <option v-for="lang of langList">{{ lang }}</option>
-            </datalist> -->
           </div>
           <label>Дата:</label>
           <input v-model="data.date" style="background-color: var(--second-color);"/>
@@ -55,12 +53,22 @@
           <KeySwitch v-model:original="data.key"/>
           <label>Темп:</label>
           <input type="number" v-model="data.bpm" style="background-color: var(--second-color);"/>
+          <label>Доп:</label>
+          <textarea v-model="data.extra" style="background-color: var(--second-color);"></textarea>
         </div>
       </div>
       <div style="flex: 0 1 2rem; margin-left: 1rem;">
         <button class="block aspect-square w-8 my-2" 
-            @click="() => { $emit('delete'); }">
+            @click="() => { $emit('updateOrder', { perf: data, action: 'delete' }); }">
           <img src="/assets/svg/cross2.svg"/>
+        </button>
+        <button v-if="data.ord > 1" class="block aspect-square w-8 my-2"
+            @click="() => { $emit('updateOrder', { perf: data, action: 'up'}); }">
+          <img src="/assets/svg/arrow_up.svg"/>
+        </button>
+        <button class="block aspect-square w-8 my-2"
+            @click="() => { $emit('updateOrder', { perf: data, action: 'down'}); }">
+          <img src="/assets/svg/arrow_down.svg"/>
         </button>
       </div>
     </div>
@@ -71,7 +79,7 @@
 import musicTheory from '@titovtima/music-theory';
 
 const props = defineProps(['data']);
-defineEmits(['delete']);
+defineEmits(['updateOrder']);
 
 const editMode = useState('editMode');
 
@@ -79,7 +87,7 @@ const loadFile: Ref<any> = ref(null);
 const formLoadingFile: Ref<any> = ref(null);
 const audioInEdit: Ref<any> = ref(null);
 
-const langNames = { 'rus': 'русский', 'eng': 'английский', 'fin': 'финский', 'swe': 'шведский' };
+const langNames = { 'rus': 'русский', 'eng': 'английский', 'fin': 'финский', 'swe': 'шведский', 'heb': 'иврит' };
 const langList: string[] = [];
 for (let lang in langNames) langList.push(lang);
 
