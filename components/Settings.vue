@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { getSettings } from '~/utils/global';
+import { getSettings, userData } from '~/utils/global';
 
 const changeFontSize: any = ref(null);
 const modal: any = ref(null);
@@ -49,7 +49,6 @@ const notationInput = ref('English');
 
 const showAuthInfo = ref(false);
 const loggedIn = ref(false);
-const userData: any = useState('userData');
 
 watch(showAuthInfo, () => {
   if (!showAuthInfo.value)

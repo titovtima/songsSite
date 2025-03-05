@@ -11,16 +11,17 @@
 </template>
 
 <script setup lang="ts">
+import { userData } from "~/utils/global";
+
 const props = defineProps(['show']);
 const emit = defineEmits(['update:show']);
 
 const showSignIn = ref(false);
 const showInfo = ref(false);
-const userData: any = useState('userData');
 
 function onconfirm() {
   document.cookie = apiRequests.tokenCookie + '=0; max-age=0; path=/';
-  useState('userData').value = null;
+  userData.value = null;
   window.location.reload();
 }
 

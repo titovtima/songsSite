@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
-import { fitTextareaHeight, getTransposedText } from "~/utils/global";
+import { fitTextareaHeight, getTransposedText, userData } from "~/utils/global";
 
 const route = useRoute();
 const router = useRouter();
@@ -85,7 +85,6 @@ const songData: Ref<any> = ref({parts: []});
 const songRights: Ref<any> = ref(null);
 const songOwner: Ref<string|null> = ref(null);
 provide('rights', songRights);
-const userData: any = useState('userData');
 const canEdit = useState('canEdit');
 watch(songRights, (rights, oldRights) => {
   if (oldRights == null) {
@@ -143,14 +142,15 @@ if (songId == 'new') {
     writers: [],
     readers: [],
   };
-  apiRequests.checkAuthorized().then(() => {
-    songRights.value.owner = userData.value.username;
-  }).catch(() => {
+  try {
+    await apiRequests.checkAuthorized();
+  } catch {
     throw createError({
       statusCode: 404,
       statusMessage: 'Песня не найдена'
     });
-  });
+  }
+  songRights.value.owner = userData.value.username;
 } else {
   try {
     songData.value = await apiRequests.getSong(Number(songId));
@@ -294,7 +294,6 @@ saveFunction.value = () => {
     console.log('saving data', songData.value);
     apiRequests.postSong(songId, songData.value)
       .then(response => {
-        console.log(response);
         let newSongId = response.id;
         songRights.value.songId = newSongId;
         console.log('saving rights', songRights.value);

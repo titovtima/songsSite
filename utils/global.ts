@@ -122,6 +122,8 @@ export function getHost(): string {
         (new URL(window.location.href)).host;
 }
 
+export const userData: Ref<any> = ref(null);
+
 export const functionsRefs = {
     saveFunction: ref(() => {}),
 }

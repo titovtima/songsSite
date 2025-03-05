@@ -8,6 +8,7 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
+import { userData } from "~/utils/global";
 
 useHead({title: 'Песни церкви «Источник жизни»'});
 
@@ -26,7 +27,6 @@ const displayList = computed(() => {
   });
 });
 
-const userData = useState('userData');
 const isAuthorised = computed(() => !!userData.value);
 
 if (import.meta.client) {

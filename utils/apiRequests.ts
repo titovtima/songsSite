@@ -1,8 +1,9 @@
-import { cloneWithDepth, getHost } from "./global";
+import { cloneWithDepth, getHost, userData } from "./global";
 
 const apiRequests = {
     apiUrl: 'https://' + getHost() + '/api/v1',
     // apiUrl: 'http://127.0.0.1:2403/api/v1', // for testing
+    // apiUrl: 'https://test.songs.titovtima.ru/api/v1', // for testing
     tokenCookie: 'auth_token',
 
     baseRequest: async (url: string, config: RequestInit = {}) => {
@@ -39,10 +40,7 @@ const apiRequests = {
         let token = useCookie(apiRequests.tokenCookie).value;
         if (!token)
             return new Promise((resolve, reject) => reject({status: 401}));
-        let response = apiRequests.authorizedRequest('/users/me');
-        response.then(response => {
-            useState('userData').value = response;
-        }).catch(() => {});
+        let response = apiRequests.authorizedRequest('/users/me').then(response => { userData.value = response; });
         return response;
     },
 

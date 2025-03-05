@@ -14,12 +14,13 @@
 </template>
 
 <script setup lang="ts">
+import { userData } from "~/utils/global";
+
 const props = defineProps(['owner']);
 
 const data: Ref<any> = inject('rights', ref(null));
 
 const editMode = useState('editMode');
-const userData: Ref<any> = useState('userData');
 </script>
 
 <style scoped>

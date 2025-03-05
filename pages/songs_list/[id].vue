@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
-import { findInSong, cloneWithDepth } from "~/utils/global";
+import { findInSong, cloneWithDepth, userData } from "~/utils/global";
 
 const route = useRoute();
 
@@ -52,7 +52,6 @@ try {
 }
 useHead({ title: listInfo.value.name });
 
-const userData: Ref<any> = useState('userData');
 const editMode = useState('editMode');
 const canEdit = useState('canEdit');
 
