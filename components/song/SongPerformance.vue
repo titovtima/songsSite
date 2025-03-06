@@ -11,7 +11,7 @@
       <a v-if="data.link" :href="data.link" style="color: rgb(0, 102, 204);">{{ data.link }}</a>
       <audio controls v-if="data.audio" :src="apiRequests.getAudioLink(data.audio)"></audio>
       <div v-if="data.lang && data.lang != 'rus'">Язык: {{ (langNames as any)[data.lang] }}</div>
-      <div v-if="data.key">Тональность: {{ musicTheory.keyName(musicTheory.getCircleKeys()[data.key % 24]) }}</div>
+      <div v-if="data.key != null">Тональность: {{ musicTheory.keyName(musicTheory.getCircleKeys()[data.key % 24]) }}</div>
       <div v-if="data.bpm">Темп: {{ data.bpm }}</div>
       <pre v-if="data.extra">{{ data.extra }}</pre>
     </div>
