@@ -16,7 +16,7 @@
       </button>
     </div>
     <RightsView v-model:data="songRights" :owner="songOwner"/>
-    <div v-if="songRights && editMode" class="flex mt-2">
+    <div v-if="songRights && editMode"><div style="display: flex; flex-direction: row;">
       <label class="flex" style="align-items: center;">
         Приватная
         <input class="mx-1" type="checkbox" :disabled="!editMode || !userData.isAdmin"
@@ -26,15 +26,15 @@
         В основном списке
         <input class="mx-1" type="checkbox" :disabled="!editMode" v-model="songData.inMainList"/>
       </label>
-    </div>
+    </div></div>
     <div v-else-if="songRights && !songData.public">Приватная</div>
     <KeySwitch v-if="songData.key != null || editMode" v-model:original="songData.key" class="mt-2"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
             @update-order="(event) => { updatePartsOrder(event); }"/>
-        <div style="display: flex; align-items: center; flex-direction: column">
-          <button class="mb-5 p-2 bg-white" :class="{ hidden: !editMode }" @click="() => { addPart(); }">
+        <div v-if="editMode" style="display: flex; align-items: center; flex-direction: column">
+          <button class="mb-5 p-2 bg-white" @click="() => { addPart(); }">
             Добавить часть
           </button>
         </div>
