@@ -1,6 +1,6 @@
 <template>
   <YandexMetrika />
-  <div class="overflow-y-auto h-full p-[20px] pb-[100px]">
+  <div ref="scrollDiv" class="overflow-y-auto h-full p-[20px] pb-[100px]">
     <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
   </div>
@@ -9,12 +9,27 @@
 
 <script setup lang="ts">
 const route = useRoute();
+const scrollDiv: Ref<any> = ref(null);
+
 useHead({ link: [{href: '/angel.jpg', rel: 'icon'}] });
 watchEffect( () => {
   useHead({link: [{href: 'https://songs.istokspb.org' + route.path, rel: 'canonical'}]});
 });
 
 const showSettingsModal = ref(false);
+
+onMounted(() => {
+  useState('mainScrollDiv').value = scrollDiv.value;
+  watchScroll();
+});
+
+function watchScroll() {
+  scrollDiv.value.addEventListener('scroll', () => {
+    if (useState('watchScroll').value) {
+      sessionStorage.setItem(route.path + ':ScrollTop', scrollDiv.value.scrollTop.toString());
+    }
+  });
+}
 </script>
 
 <style>

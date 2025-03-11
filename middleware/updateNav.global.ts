@@ -8,4 +8,5 @@ export default defineNuxtRouteMiddleware((to, from) => {
     editMode.value = false;
     const saveFunction = functionsRefs.saveFunction;
     saveFunction.value = () => {};
+    useState('watchScroll', () => false).value = false;
 });

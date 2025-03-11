@@ -13,12 +13,14 @@
 <script setup lang="ts">
 import { findWordsInSong, sortSongs } from '~/utils/global';
 
-const searchInput: any = ref(null);
+const searchInput: Ref<any> = ref(null);
 
 const props = defineProps(['searchList', 'globalSearchHeader']);
 defineEmits(['remove-song']);
 const displayList: Ref<Array<any>> = ref([]);
 const allSongsDisplayList: Ref<Array<any>> = ref([]);
+
+const route = useRoute();
 
 const allSongsData: Ref<Array<any>> = inject('allSongsData', ref([]));
 
@@ -28,8 +30,14 @@ onMounted(() => {
   searchInput.value.oninput = () => {
     updateLists();
   }
+  setAndWatchSearchText();
+  let loadListPromise = inject('loadListPromise', new Promise(resolve => resolve([])));
+  loadListPromise.then(() => {
+    setAndWatchScroll();
+  })
 });
 
+const allSongsPromise = inject('loadAllSongsPromise', new Promise((resolve) => resolve([])));
 function updateLists() {
   let searchValue: string = searchInput.value.value.toLowerCase();
   if (!searchInput.value || searchValue == '') {
@@ -38,12 +46,33 @@ function updateLists() {
   } else {
     let searchArr = searchValue.split(/[^\p{L}]/gu).filter(w => w.length > 0);
     displayList.value = sortSongs(toValue(props.searchList).filter((song: any) => findWordsInSong(searchArr, song)));
-    allSongsDisplayList.value = sortSongs(allSongsData.value.filter((song: { name: string }) => { 
-      return findWordsInSong(searchArr, song) && !toValue(displayList).find((song2: { name: string }) => song.name == song2.name); 
-    }));
+    allSongsPromise.then(() => {
+      allSongsDisplayList.value = sortSongs(allSongsData.value.filter((song: { name: string }) => { 
+        return findWordsInSong(searchArr, song) && !toValue(displayList).find((song2: { name: string }) => song.name == song2.name); 
+      }));
+    });
   }
 }
 
+function setAndWatchSearchText() {
+  let oldSearchText = sessionStorage.getItem(route.path + ':SearchText');
+  if (oldSearchText) {
+    searchInput.value.value = oldSearchText;
+  }
+  searchInput.value.addEventListener('input', () => {
+    sessionStorage.setItem(route.path + ':SearchText', searchInput.value.value);
+  })
+}
+
+
+function setAndWatchScroll() {
+  const scrollDiv: Ref<any> = useState('mainScrollDiv');
+  let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
+  if (oldScroll && Number(oldScroll)) {
+    scrollDiv.value.scrollTop = Number(oldScroll);
+  }
+  useState('watchScroll').value = true;
+}
 </script>
 
 <style scoped>

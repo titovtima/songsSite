@@ -1,8 +1,7 @@
 <template>
   <div>
-    <a v-if="isAuthorised" href="/song/new?edit=true" class="block mb-2">+ добавить песню</a>
+    <NuxtLink v-if="isAuthorised" to="/song/new?edit=true" class="block mb-2">+ добавить песню</NuxtLink>
     <SongSearch :search-list="mainListData" global-search-header="Детские"/>
-    <!-- <SongList :list="toValue(displayList)" class="mt-5"/> -->
   </div>
 </template>
 
@@ -16,31 +15,19 @@ const mainListInfo = ref([]);
 const mainListData = ref([]);
 const allSongsData: Ref<Array<any>> = ref([]);
 provide('allSongsData', allSongsData);
-const searchedList: any = ref(null);
-const displayList = computed(() => {
-  if (!mainListData.value || mainListData.value.length == 0 || searchedList.value == null)
-    return mainListInfo.value;
-  return searchedList.value.sort((song1: { name: string; }, song2: { name: string; }) => {
-    if (song1.name < song2.name) return -1;
-    if (song1.name > song2.name) return 1;
-    else return 0;
-  });
-});
 
 const isAuthorised = computed(() => !!userData.value);
 
 if (import.meta.client) {
   apiRequests.getMainListInfo()
     .then(response => {
-      mainListInfo.value = response.list.sort((song1: { name: string; }, song2: { name: string; }) => {
-        if (song1.name < song2.name) return -1;
-        if (song1.name == song2.name) return 0;
-        if (song1.name > song2.name) return 1;
-      });
+      mainListInfo.value = response.list;
     });
-  apiRequests.getMainList()
+  let listInfoPromise = apiRequests.getMainList()
     .then(response => { mainListData.value = response.list; });
-  apiRequests.getAllSongs()
+  provide('loadListPromise', listInfoPromise);
+  let allSongsPromise = apiRequests.getAllSongs()
     .then(response => { allSongsData.value = response.list; });
+  provide('loadAllSongsPromise', allSongsPromise);
 }
 </script>

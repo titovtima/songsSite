@@ -11,8 +11,6 @@
         <option v-for="song of chooseAddSongList">{{ song.name }}</option>
       </datalist>
     </div>
-    <!-- <SongList :list="displayList" :nav-list="route.params.id" class="mt-5"
-      @remove="song => {songsData = songsData.filter(s => s.id != song.id); songsInfo = songsInfo.filter(s => s.id != song.id)}"/> -->
   </div>
 </template>
 
@@ -68,12 +66,12 @@ const addSongInput: Ref<any> = ref(null);
 const addSongClick: Ref<any> = ref(null);
 
 if (import.meta.client) {
-  apiRequests.getListSongsInfo(Number(route.params.id))
-    .then(response => { songsInfo.value = response.list; });
-  apiRequests.getListData(Number(route.params.id))
+  let listPromise = apiRequests.getListData(Number(route.params.id))
     .then(response => { songsData.value = response.list; });
-  apiRequests.getAllSongs()
+  provide('loadListPromise', listPromise);
+  let allSongsPromise = apiRequests.getAllSongs()
     .then(response => { allSongsData.value = response.list; });
+  provide('loadAllSongsPromise', allSongsPromise);
 }
 
 watch(editMode, () => {
