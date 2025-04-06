@@ -62,6 +62,29 @@ const apiRequests = {
         }
     },
 
+    register: async (username: string, email: string, password: string) => {
+        let body: any = { username: username, password: password };
+        if (email.length > 0) {
+            body.email = email;
+        }
+        try {
+            await apiRequests.baseRequest('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body),
+            });
+        } catch(response: any) {
+            try {
+                let errorResponse = await response.json();
+                return Promise.reject(errorResponse.errorCode);
+            } catch(e) {
+                return Promise.reject(response.status);
+            }
+        }
+    },
+
     getSong: async (songId: number) => {
         return apiRequests.optionallyAuthorizedRequest('/song/' + songId);
     },
