@@ -3,7 +3,7 @@
     <h1 class="header">{{ listData ? listData.name : 'Список песен' }}</h1>
     <RightsView style="margin-bottom: 1rem;" :owner="listRights ? listRights.owner : null" />
     <SongSearch :search-list="songsData"
-      @remove-song="song => {listData.listIds = listData.listIds.filter(id => id != song.id);}"/>
+      @remove-song="song => {listData.list = listData.list.filter(id => id != song.id);}"/>
     <div style="display: flex; margin-top: 1rem;" v-if="editMode">
       <span style="flex: 0 1 max-content; cursor: pointer; margin-right: 1rem;" ref="addSongClick">+ добавить песню</span>
       <input style="flex: 1 1 max-content; padding: 0 0.5rem;" ref="addSongInput" type="text" list="add-song-list">
@@ -24,7 +24,7 @@ const route = useRoute();
 const listIdInt = Number(route.params.id);
 const [listData, loadPromise] = getListData(listIdInt);
 const allSongsData = getAllSongsData();
-const songsData = computed(() => allSongsData.value.filter(song => listData.value.listIds.includes(song.id)));
+const songsData = computed(() => allSongsData.value.filter(song => listData.value.list.includes(song.id)));
 
 try {
   await loadPromise;

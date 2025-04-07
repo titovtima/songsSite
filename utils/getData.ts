@@ -45,7 +45,7 @@ export type SongsList = {
     name: string,
     owner: string,
     public: boolean,
-    listIds: number[]
+    list: number[]
 }
 
 export const emptySong = {
@@ -65,7 +65,7 @@ export const emptySongsList = {
     name: '',
     owner: '',
     public: false,
-    listIds: []
+    list: []
 };
 
 export const songsData: Ref<Array<Song>> = ref([]);
