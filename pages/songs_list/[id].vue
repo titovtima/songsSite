@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="header">{{ listData ? listData.name : 'Список песен' }}</h1>
+    <h1 class="header"><ClientOnly>{{ listData ? listData.name : 'Список песен' }}</ClientOnly></h1>
     <RightsView style="margin-bottom: 1rem;" :owner="listRights ? listRights.owner : null" />
     <SongSearch :search-list="songsData"
       @remove-song="song => {listData.list = listData.list.filter(id => id != song.id);}"/>
@@ -62,7 +62,7 @@ watch(editMode, () => {
       addSongClick.value.addEventListener('click', () => {
         let song = allSongsData.value.find(song => song.name == addSongInput.value.value);
         if (song) {
-          songsData.value.push(song);
+          listData.value.list.push(song.id);
           addSongInput.value.value = '';
         }
       });
