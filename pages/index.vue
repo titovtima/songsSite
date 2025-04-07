@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NuxtLink v-if="isAuthorised" to="/song/new?edit=true" class="block mb-2">+ добавить песню</NuxtLink>
+    <ClientOnly><NuxtLink v-if="isAuthorised" to="/song/new?edit=true" class="block mb-2">+ добавить песню</NuxtLink></ClientOnly>
     <SongSearch :search-list="mainListData" global-search-header="Детские"/>
   </div>
 </template>

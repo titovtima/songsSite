@@ -1,12 +1,14 @@
 <template>
   <ul>
-    <li v-for="song in list">
-      <button v-if="editMode" class="aspect-square w-4 my-2" 
-          @click="() => { $emit('remove', song); }">
-        <img src="/assets/svg/cross2.svg"/>
-      </button> 
-      <a class="list-ref" :href="'/song/' + song.id" @click.prevent="clickLink(song.id)">{{ song.name }}</a>
-    </li>
+    <ClientOnly>
+      <li v-for="song in list">
+        <button v-if="editMode" class="aspect-square w-4 my-2" 
+            @click="() => { $emit('remove', song); }">
+          <img src="/assets/svg/cross2.svg"/>
+        </button> 
+        <a class="list-ref" :href="'/song/' + song.id" @click.prevent="clickLink(song.id)">{{ song.name }}</a>
+      </li>
+    </ClientOnly>
   </ul>
 </template>
 
