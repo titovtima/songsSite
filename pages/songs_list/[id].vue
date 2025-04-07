@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1 class="header">{{ listInfo ? listInfo.name : 'Список песен' }}</h1>
+    <h1 class="header">{{ listData ? listData.name : 'Список песен' }}</h1>
     <RightsView style="margin-bottom: 1rem;" :owner="listRights ? listRights.owner : null" />
     <SongSearch :search-list="songsData"
-      @remove-song="song => {songsData = songsData.filter(s => s.id != song.id); songsInfo = songsInfo.filter(s => s.id != song.id)}"/>
+      @remove-song="song => {listData.listIds = listData.listIds.filter(id => id != song.id);}"/>
     <div style="display: flex; margin-top: 1rem;" v-if="editMode">
       <span style="flex: 0 1 max-content; cursor: pointer; margin-right: 1rem;" ref="addSongClick">+ добавить песню</span>
       <input style="flex: 1 1 max-content; padding: 0 0.5rem;" ref="addSongInput" type="text" list="add-song-list">
@@ -16,39 +16,25 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
+import { getAllSongsData, getListData } from "~/utils/getData";
 import { findInSong, cloneWithDepth, userData } from "~/utils/global";
 
 const route = useRoute();
 
-const listInfo: Ref<any> = ref(null);
-const songsInfo: Ref<Array<any>> = ref([]);
-const songsData: Ref<Array<any>> = ref([]);
-const allSongsData: Ref<Array<any>> = ref([]);
-provide('allSongsData', allSongsData);
-const searchedList: any = ref(null);
 const listIdInt = Number(route.params.id);
-const displayList = computed(() => {
-  let list = songsInfo.value;
-  if (songsData.value && songsData.value.length != 0)
-    list = songsData.value;
-  if (songsData.value && songsData.value.length != 0 && searchedList.value != null)
-    list = searchedList.value;
-  return list.sort((song1: { name: string; }, song2: { name: string; }) => {
-    if (song1.name < song2.name) return -1;
-    if (song1.name > song2.name) return 1;
-    else return 0;
-  });
-});
+const [listData, loadPromise] = getListData(listIdInt);
+const allSongsData = getAllSongsData();
+const songsData = computed(() => allSongsData.value.filter(song => listData.value.listIds.includes(song.id)));
 
 try {
-  listInfo.value = await apiRequests.getListInfo(listIdInt);
+  await loadPromise;
 } catch (e) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Список не найден'
   });
 }
-useHead({ title: listInfo.value.name });
+useHead({ title: listData.value.name });
 
 const editMode = useState('editMode');
 const canEdit = useState('canEdit');
@@ -64,15 +50,6 @@ provide('rights', listRights);
 const chooseAddSongList: Ref<Array<any>> = ref([]);
 const addSongInput: Ref<any> = ref(null);
 const addSongClick: Ref<any> = ref(null);
-
-if (import.meta.client) {
-  let listPromise = apiRequests.getListData(Number(route.params.id))
-    .then(response => { songsData.value = response.list; });
-  provide('loadListPromise', listPromise);
-  let allSongsPromise = apiRequests.getAllSongs()
-    .then(response => { allSongsData.value = response.list; });
-  provide('loadAllSongsPromise', allSongsPromise);
-}
 
 watch(editMode, () => {
   if (editMode.value) {
@@ -95,8 +72,7 @@ watch(editMode, () => {
 
 const saveFunction = functionsRefs.saveFunction;
 saveFunction.value = () => {
-  let data = cloneWithDepth(listInfo.value, 1);
-  data.list = songsData.value.map(song => song.id);
+  let data = cloneWithDepth(listData.value, 1);
   apiRequests.postListData(String(listIdInt), data).then(() => { window.location.reload(); });
 }
 </script>

@@ -15,7 +15,7 @@
         Аккорды в тексте
       </button>
     </div>
-    <RightsView v-model:data="songRights" :owner="songOwner"/>
+    <RightsView v-model:data="songRights" :owner="songRights ? songRights.owner : null"/>
     <div v-if="songRights && editMode"><div style="display: flex; flex-direction: row;">
       <label class="flex" style="align-items: center;">
         Приватная
@@ -48,6 +48,7 @@
             {id: -1,
              artists: [],
              songName: songData.name,
+             audio: null,
              extra: null,
              album: null,
              lang: null,
@@ -71,7 +72,8 @@
 
 <script setup lang="ts">
 import apiRequests from "~/utils/apiRequests";
-import { fitTextareaHeight, getTransposedText, userData } from "~/utils/global";
+import { getSongData, type Song } from "~/utils/getData";
+import { fitTextareaHeight, getTransposedText } from "~/utils/global";
 
 const route = useRoute();
 const router = useRouter();
@@ -81,9 +83,8 @@ const textTypeButton: any = ref(null);
 const chordsTypeButton: any = ref(null);
 const chordsTextTypeButton: any = ref(null);
 
-const songData: Ref<any> = ref({parts: []});
+const songData: Ref<Song> = ref(emptySong);
 const songRights: Ref<any> = ref(null);
-const songOwner: Ref<string|null> = ref(null);
 provide('rights', songRights);
 const canEdit = useState('canEdit');
 watch(songRights, (rights, oldRights) => {
@@ -92,7 +93,6 @@ watch(songRights, (rights, oldRights) => {
       canEdit.value = userData.value.isAdmin || userData.value.username == rights.owner ||
         rights.writers.includes(userData.value.username);
     }).catch(() => {});
-    songOwner.value = rights.owner;
   }
 });
 
@@ -129,19 +129,6 @@ watch(shiftOriginalKey, (shift: any) => {
 });
 
 if (songId == 'new') {
-  songData.value = {
-    name: 'Новая песня',
-    parts: [],
-    performances: [],
-    key: null,
-    public: false,
-    inMainList: true,
-  };
-  songRights.value = {
-    owner: '',
-    writers: [],
-    readers: [],
-  };
   try {
     await apiRequests.checkAuthorized();
   } catch {
@@ -150,10 +137,17 @@ if (songId == 'new') {
       statusMessage: 'Песня не найдена'
     });
   }
-  songRights.value.owner = userData.value.username;
+  songData.value.name = 'Новая песня';
+  songRights.value = {
+    owner: userData.value.username,
+    writers: [],
+    readers: [],
+  };
 } else {
   try {
-    songData.value = await apiRequests.getSong(Number(songId));
+    let [data, loadPromise] = getSongData(Number(songId));
+    await loadPromise;
+    songData.value = data.value;
   } catch (e) {
     throw createError({
       statusCode: 404,
@@ -197,7 +191,8 @@ onMounted(() => {
   chordsTextTypeButton.value.onclick = () => {
     view.value = 'ChordsText';
   }
-  makeLinksInString(extraText.value, songData.value.extra);
+  if (songData.value.extra != null)
+    makeLinksInString(extraText.value, songData.value.extra);
 });
 
 function makeLinksInString(elem: any, string: string) {

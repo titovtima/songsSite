@@ -6,28 +6,12 @@
 </template>
 
 <script setup lang="ts">
-import apiRequests from "~/utils/apiRequests";
+import { getMainListData } from "~/utils/getData";
 import { userData } from "~/utils/global";
 
 useHead({title: 'Песни церкви «Источник жизни»'});
 
-const mainListInfo = ref([]);
-const mainListData = ref([]);
-const allSongsData: Ref<Array<any>> = ref([]);
-provide('allSongsData', allSongsData);
+const mainListData = import.meta.client ? getMainListData() : ref([]);
 
 const isAuthorised = computed(() => !!userData.value);
-
-if (import.meta.client) {
-  apiRequests.getMainListInfo()
-    .then(response => {
-      mainListInfo.value = response.list;
-    });
-  let listInfoPromise = apiRequests.getMainList()
-    .then(response => { mainListData.value = response.list; });
-  provide('loadListPromise', listInfoPromise);
-  let allSongsPromise = apiRequests.getAllSongs()
-    .then(response => { allSongsData.value = response.list; });
-  provide('loadAllSongsPromise', allSongsPromise);
-}
 </script>

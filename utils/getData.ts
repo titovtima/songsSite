@@ -1,4 +1,4 @@
-type SongPart = {
+export type SongPart = {
     type: string,
     ord: number,
     name: string | null,
@@ -6,12 +6,12 @@ type SongPart = {
     key: number | null
 }
 
-type Artist = {
+export type Artist = {
     id: number,
     name: string
 }
 
-type SongPerformance = {
+export type SongPerformance = {
     id: number,
     artists: Artist[],
     songName: string | null,
@@ -28,7 +28,7 @@ type SongPerformance = {
     audio: string | null
 }
 
-type Song = {
+export type Song = {
     id: number,
     name: string,
     extra: string | null,
@@ -40,7 +40,7 @@ type Song = {
     performances: SongPerformance[]
 }
 
-type SongsList = {
+export type SongsList = {
     id: number,
     name: string,
     owner: string,
@@ -48,19 +48,51 @@ type SongsList = {
     listIds: number[]
 }
 
-export const userData: Ref<any> = ref(null);
+export const emptySong = {
+    id: -1,
+    name: '',
+    extra: null,
+    key: null,
+    owner: '',
+    public: false,
+    inMainList: true,
+    parts: [],
+    performances: []
+};
+
+export const emptySongsList = {
+    id: -1,
+    name: '',
+    owner: '',
+    public: false,
+    listIds: []
+};
+
 export const songsData: Ref<Array<Song>> = ref([]);
 export const listsData: Ref<Array<SongsList>> = ref([]);
 
-let storageSongsDataString = localStorage.getItem("songsData")
-if (storageSongsDataString != null) {
-    let storageSongsData = JSON.parse(storageSongsDataString)
-    songsData.value = storageSongsData;
+if (import.meta.client) {
+    let storageSongsDataString = localStorage.getItem("songsData");
+    if (storageSongsDataString != null) {
+        let storageSongsData = JSON.parse(storageSongsDataString);
+        if (Array.isArray(storageSongsData)) {
+            songsData.value = storageSongsData;
+        }
+    }
+    let storageListsDataString = localStorage.getItem("listsData");
+    if (storageListsDataString != null) {
+        let storageListsData = JSON.parse(storageListsDataString);
+        if (Array.isArray(storageListsData)) {
+            listsData.value = storageListsData;
+        }
+    }
 }
 
 export function getAllSongsData(): Ref<Array<Song>> {
+    if (import.meta.server) return ref([]);
     apiRequests.getAllSongs().then(response => {
-        songsData.value = response;
+        songsData.value = response.list;
+        localStorage.setItem('songsData', JSON.stringify(songsData.value));
     });
     return songsData;
 }
@@ -70,19 +102,20 @@ export function getMainListData(): Ref<Array<Song>> {
     return computed(() => songsData.value.filter(song => song.inMainList));
 }
 
-export function getListInfo(listId: number): Ref<SongsList> {
-    getAllSongsData();
-    apiRequests.getListData(listId).then(response => {
-        listsData.value[listId] = response.map(
-            (value: {list: Song[], listIds?: number[]}) => value.listIds = value.list.map(song => song.id));
-
+export function getListData(listId: number): [Ref<SongsList>, Promise<void>] {
+    if (import.meta.server) return [ref(emptySongsList), new Promise(resolve => resolve())];
+    let promise = apiRequests.getListData(listId).then(response => {
+        listsData.value[listId] = response;
+        localStorage.setItem('listsData', JSON.stringify(listsData.value));
     });
-    return computed(() => listsData.value[listId]);
+    return [computed(() => listsData.value[listId]), promise];
 }
 
-export function getSongData(songId: number): Ref<Song> {
-    apiRequests.getSong(songId).then(response => {
-        songsData.value[songId] = response;
+export function getSongData(songId: number): [Ref<Song>, Promise<void> ] {
+    if (import.meta.server) return [ref(emptySong), new Promise(resolve => resolve())];
+    let promise = apiRequests.getSong(songId).then(response => {
+        songsData.value[songId-1] = response;
+        localStorage.setItem('songsData', JSON.stringify(songsData.value));
     });
-    return computed(() => songsData.value[songId]);
+    return [computed(() => songsData.value[songId-1]), promise];
 }
