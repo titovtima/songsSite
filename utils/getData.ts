@@ -68,21 +68,21 @@ export const emptySongsList = {
     list: []
 };
 
-export const songsData: Ref<Array<Song>> = ref([]);
-export const listsData: Ref<Array<SongsList>> = ref([]);
+const songsData: Ref<Map<number, Song>> = ref(new Map());
+const listsData: Ref<Map<number, SongsList>> = ref(new Map());
 
 if (import.meta.client) {
     let storageSongsDataString = localStorage.getItem("songsData");
     if (storageSongsDataString != null) {
         let storageSongsData = JSON.parse(storageSongsDataString);
-        if (Array.isArray(storageSongsData)) {
+        if (storageSongsData.get) {
             songsData.value = storageSongsData;
         }
     }
     let storageListsDataString = localStorage.getItem("listsData");
     if (storageListsDataString != null) {
         let storageListsData = JSON.parse(storageListsDataString);
-        if (Array.isArray(storageListsData)) {
+        if (storageListsData.get) {
             listsData.value = storageListsData;
         }
     }
@@ -91,31 +91,39 @@ if (import.meta.client) {
 export function getAllSongsData(): Ref<Array<Song>> {
     if (import.meta.server) return ref([]);
     apiRequests.getAllSongs().then(response => {
-        songsData.value = response.list;
+        for (let song of response.list) {
+            songsData.value.set(song.id, song);
+        }
         localStorage.setItem('songsData', JSON.stringify(songsData.value));
     });
-    return songsData;
+    return computed(() => [...songsData.value.values()]);
 }
 
 export function getMainListData(): Ref<Array<Song>> {
-    getAllSongsData();
-    return computed(() => songsData.value.filter(song => song.inMainList));
+    let data = getAllSongsData();
+    return computed(() => data.value.filter(song => song.inMainList));
 }
 
 export function getListData(listId: number): [Ref<SongsList>, Promise<void>] {
     if (import.meta.server) return [ref(emptySongsList), new Promise(resolve => resolve())];
     let promise = apiRequests.getListData(listId).then(response => {
-        listsData.value[listId] = response;
+        listsData.value.set(listId, response);
         localStorage.setItem('listsData', JSON.stringify(listsData.value));
     });
-    return [computed(() => listsData.value[listId]), promise];
+    return [computed(() => {
+        let listData = listsData.value.get(listId);
+        return listData ? listData : emptySongsList;
+    }), promise];
 }
 
 export function getSongData(songId: number): [Ref<Song>, Promise<void> ] {
     if (import.meta.server) return [ref(emptySong), new Promise(resolve => resolve())];
     let promise = apiRequests.getSong(songId).then(response => {
-        songsData.value[songId-1] = response;
+        songsData.value.set(songId, response);
         localStorage.setItem('songsData', JSON.stringify(songsData.value));
     });
-    return [computed(() => songsData.value[songId-1]), promise];
+    return [computed(() => {
+        let songData = songsData.value.get(songId);
+        return songData ? songData : emptySong;
+    }), promise];
 }
