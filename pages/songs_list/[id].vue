@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="header"><ClientOnly>{{ listData ? listData.name : 'Список песен' }}</ClientOnly></h1>
+    <h1 class="header">{{ listData ? listData.name : 'Список песен' }}</h1>
     <RightsView style="margin-bottom: 1rem;" :owner="listRights ? listRights.owner : null" />
     <SongSearch :search-list="songsData"
       @remove-song="song => {listData.list = listData.list.filter(id => id != song.id);}"/>
@@ -23,7 +23,7 @@ const route = useRoute();
 
 const listIdInt = Number(route.params.id);
 const [listData, loadPromise] = getListData(listIdInt);
-const allSongsData = getAllSongsData();
+const allSongsData = import.meta.client ? getAllSongsData() : ref([]);
 const songsData = computed(() => allSongsData.value.filter(song => listData.value.list.includes(song.id)));
 
 try {
