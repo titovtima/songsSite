@@ -1,75 +1,10 @@
-# Nuxt 3 Minimal Starter
+# SongsSite
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A frontend server for songs site. Backend repository: [github.com/titovtima/songsServer](https://github.com/titovtima/songsServer).
 
-## Setup
+Two independent instances are running on [songs.istokspb.org](https://songs.istokspb.org) and [test.songs.titovtima.ru](https://test.songs.titovtima.ru).
 
-Make sure to install the dependencies:
+Written on nuxt framework. Uses tailwind for styling.
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Uses `API_HOST` env variable to make server process know, where to send backend API requests. Client process uses `window.location` to get this.  
+Also recognizes nuxt's `HOST` and `PORT` env variables.
