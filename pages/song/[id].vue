@@ -182,6 +182,7 @@ watch(editMode, () => {
 
 const extraText: any = ref(null);
 onMounted(() => {
+  (useState('mainScrollDiv').value as any).scrollTop = 0;
   textTypeButton.value.onclick = () => {
     view.value = 'Text';
   }
