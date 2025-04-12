@@ -96,7 +96,7 @@ watch(songRights, (rights, oldRights) => {
   }
 });
 
-const view = useCookie('view', {path: '/song/'});
+const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
 if (!view.value)
   view.value = 'Text';
 
@@ -183,6 +183,7 @@ watch(editMode, () => {
 const extraText: any = ref(null);
 onMounted(() => {
   (useState('mainScrollDiv').value as any).scrollTop = 0;
+  document.cookie = "view=ChordsText; path=/song/; max-age=0";
   textTypeButton.value.onclick = () => {
     view.value = 'Text';
   }
