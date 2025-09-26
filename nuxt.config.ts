@@ -15,9 +15,9 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-title', content: 'Песни ИЖ' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/public/icon-192.png' },
-        { rel: 'apple-touch-icon', href: '/public/icon-180.png', sizes: '180x180' },
-        { rel: 'mask-icon', href: '/public/icon-512.png', color: '#FFFFFF' }
+        { rel: 'icon', type: 'image/png', href: '/logo-192.png' },
+        { rel: 'apple-touch-icon', href: '/logo-180.png', sizes: '180x180' },
+        { rel: 'mask-icon', href: '/logo-512.png', color: '#FFFFFF' }
       ]
     }
   },
@@ -54,17 +54,23 @@ export default defineNuxtConfig({
       "description": "Песни Церкви \"Источник Жизни\"",
       "icons": [
         {
-          "src": "/public/logo-192.png",
+          "src": "/logo-192.png",
           "sizes": "192x192",
           "type": "image/png"
         },
         {
-          "src": "/public/logo-512.png",
+          "src": "/logo-512.png",
           "sizes": "512x512",
           "type": "image/png"
         },
         {
-          "src": "/public/logo-512.png",
+          "src": "/logo-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/logo-512.png",
           "sizes": "512x512",
           "type": "image/png",
           "purpose": "maskable"
