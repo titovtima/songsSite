@@ -1,0 +1,9 @@
+.nuxt/
+.output/
+dist
+node_modules/
+package-lock.json
+local/
+.vscode/
+.idea/
+.DS_Store

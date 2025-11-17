@@ -11,10 +11,12 @@
 const route = useRoute();
 const scrollDiv: Ref<any> = ref(null);
 
-useHead({ link: [{href: '/angel.jpg', rel: 'icon'}] });
-watchEffect( () => {
+useHead({ link: [{href: '/logo-180.png', rel: 'icon'}] });
+watchEffect(() => {
   useHead({link: [{href: 'https://songs.istokspb.org' + route.path, rel: 'canonical'}]});
 });
+
+useHead({link: [{rel: 'manifest', href: '/manifest.json'}]})
 
 const showSettingsModal = ref(false);
 
