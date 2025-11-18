@@ -1,20 +1,25 @@
 <template>
-  <nav class="overflow-hidden">
-    <ul>
-      <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
-      <li @click="$emit('clickSettings')">настройки</li>
-      <li v-if="false" :class="{ active: route.path.match(/\/songs_lists/) }" @click="listsButtonClick">
-        {{ (navState.listId != null) ? 'к списку' : 'списки' }}
-      </li>
-      <li v-else :class="{ active: route.path.match(/\/songs_list\/1/) }"  @click="router.push('/songs_list/1')">
-        детские
-      </li>
-      <li v-if="canEdit">
-        <span v-if="editMode" @click="() => { saveFunction(); }">сохранить</span>
-        <span v-else @click="() => { editMode = true; }">редактировать</span>
-      </li>
-    </ul>
-  </nav>
+  <div>
+    <nav class="overflow-hidden">
+      <ul>
+        <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
+        <li @click="$emit('clickSettings')">настройки</li>
+        <li v-if="false" :class="{ active: route.path.match(/\/songs_lists/) }" @click="listsButtonClick">
+          {{ (navState.listId != null) ? 'к списку' : 'списки' }}
+        </li>
+        <li v-else :class="{ active: route.path.match(/\/songs_list\/1/) }"  @click="router.push('/songs_list/1')">
+          детские
+        </li>
+        <li v-if="canEdit">
+          <span v-if="editMode" @click="() => { saveFunction(); }">сохранить</span>
+          <span v-else @click="() => { editMode = true; }">редактировать</span>
+        </li>
+      </ul>
+    </nav>
+    <div style="overflow: hidden;">
+      <span ref="copyRef" style="float: right; cursor: pointer;" @click="copyUrlToClipboard">Скопировать ссылку</span>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +31,8 @@ const canEdit = useState('canEdit');
 const editMode = useState('editMode');
 const saveFunction = functionsRefs.saveFunction;
 
+const copyRef = ref();
+
 const navState: any = useState('navigation', () => { return { listId: null, prev: null }; });
 
 function listsButtonClick() {
@@ -33,6 +40,45 @@ function listsButtonClick() {
     router.push('/songs_list/' + navState.value.listId);
   } else {
     router.push('/songs_lists');
+  }
+}
+
+function copyUrlToClipboard() {
+  console.log(navigator);
+  if (navigator && navigator.clipboard) {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      copyRef.value.innerHTML = "Скопировано";
+      setTimeout(() => {
+        copyRef.value.innerHTML = "Скопировать ссылку";
+      }, 5000);
+    });
+  } else {
+    let textArea = document.createElement("textarea");
+    textArea.value = window.location.href;
+    
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Fallback: Copying text command was ' + msg);
+      if (successful) {
+        copyRef.value.innerHTML = "Скопировано";
+        setTimeout(() => {
+          copyRef.value.innerHTML = "Скопировать ссылку";
+        }, 5000);
+      }
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
   }
 }
 </script>
