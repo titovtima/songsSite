@@ -85,6 +85,16 @@ const apiRequests = {
         }
     },
 
+    changeEmail: async (email: string) => {
+        return apiRequests.authorizedRequest('/change_email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email }),
+        });
+    },
+
     getSong: async (songId: number) => {
         return apiRequests.optionallyAuthorizedRequest('/song/' + songId);
     },
