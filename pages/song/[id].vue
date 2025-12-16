@@ -29,6 +29,7 @@
     </div></div>
     <div v-else-if="songRights && !songData.public">Приватная</div>
     <KeySwitch v-if="songData.key != null || editMode" v-model:original="songData.key" class="mt-2"/>
+    <SelectList v-if="langList.length > 0" :deselect="false" :options="langList" :selected="currentLang" @select-option="option => {console.log(option); return currentLang = option}"/>
     <div class="parts-list overflow-x-auto">
       <div class="overflow-x-hidden min-w-min">
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
@@ -71,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+import SelectList from "~/components/SelectList.vue";
 import apiRequests from "~/utils/apiRequests";
 import { getSongData, type Song } from "~/utils/getData";
 import { fitTextareaHeight, getTransposedText } from "~/utils/global";
@@ -96,6 +98,20 @@ watch(songRights, (rights, oldRights) => {
   }
 });
 
+const langList = computed(() => {
+  let result = uniqueFromArr(songData.value.parts.filter(part => part.type == view.value).map(part => part.lang));
+  if (currentLang.value == null) {
+    if (result.length > 0) {
+      if (result.includes('rus'))
+        currentLang.value = 'rus';
+      else
+        currentLang.value = result[0];
+    }
+  }
+  return result;
+});
+const currentLang: Ref<string | null> = ref(null);
+
 const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
 if (!view.value)
   view.value = 'Text';
@@ -105,12 +121,12 @@ const chordsParts = computed(() => songData.value.parts.filter((part: { type: st
 const chordsTextParts = computed(() => songData.value.parts
   .filter((part: { type: string; }) => part.type == 'ChordsText'));
 const viewParts = computed(() => {
-  if (view.value == 'Text') return toValue(textParts).sort((value: any) => value.ord);
-  else if (view.value == 'Chords') return toValue(chordsParts).sort((value: any) => value.ord);
-  else return toValue(chordsTextParts).sort((value: any) => value.ord);
+  return songData.value.parts.filter(part => part.type == view.value && 
+    (part.lang == currentLang.value || part.lang == undefined || part.lang == null || editMode.value || currentLang.value == null))
+    .sort(part => part.ord);
 });
 
-const editMode: any = useState('editMode');
+const editMode: Ref<boolean> = useState('editMode');
 if (route.query['edit']) {
   watch(userData, () => {
     editMode.value = true;
@@ -165,14 +181,14 @@ if (songId == 'new') {
 
 useHead({title: songData.value.name});
 
-definePageMeta({
-  middleware: (to, from) => {
-    const navState: any = useState('navigation');
-    if (from.name == 'songs_list-id' && to.name == 'song-id') {
-      navState.value.listId = Number(from.params.id);
-    }
-  }
-});
+// definePageMeta({
+//   middleware: (to, from) => {
+//     const navState: any = useState('navigation');
+//     if (from.name == 'songs_list-id' && to.name == 'song-id') {
+//       navState.value.listId = Number(from.params.id);
+//     }
+//   }
+// });
 
 watch(editMode, () => {
   if (editMode.value) {
@@ -224,13 +240,13 @@ function makeLinksInString(elem: any, string: string) {
 function addPart() {
   if (view.value == 'Text') {
     let ord = toValue(textParts).reduce((acc: number, value: any) => Math.max(acc, value.ord), 0);
-    songData.value.parts.push({type: 'Text', data: '', name: '', key: null, ord: ord + 1});
+    songData.value.parts.push({type: 'Text', data: '', name: '', key: null, ord: ord + 1, lang: null});
   } else if (view.value == 'Chords') {
     let ord = toValue(chordsParts).reduce((acc: number, value: any) => Math.max(acc, value.ord), 0);
-    songData.value.parts.push({type: 'Chords', data: '', name: '', key: null, ord: ord + 1});
+    songData.value.parts.push({type: 'Chords', data: '', name: '', key: null, ord: ord + 1, lang: null});
   } else {
     let ord = toValue(chordsTextParts).reduce((acc: number, value: any) => Math.max(acc, value.ord), 0);
-    songData.value.parts.push({type: 'ChordsText', data: '', name: '', key: null, ord: ord + 1});
+    songData.value.parts.push({type: 'ChordsText', data: '', name: '', key: null, ord: ord + 1, lang: null});
   }
 }
 

@@ -3,7 +3,8 @@ export type SongPart = {
     ord: number,
     name: string | null,
     data: string,
-    key: number | null
+    key: number | null,
+    lang: string | null,
 }
 
 export type Artist = {

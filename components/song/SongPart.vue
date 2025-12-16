@@ -6,6 +6,7 @@
         <input v-else type="text" class="w-full p-1" v-model="data.name">
       </div>
       <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" class="mb-1"/>
+      <input v-if="editMode" type="text" v-model="data.lang">
       <div v-if="!editMode">
         <pre class="text-base p-1" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
           toValue(getTransposedPartText(originalKey, keyShift))
@@ -53,6 +54,11 @@ watch([editMode, () => props.data], () => {
       fitTextareaHeight(contentTextarea.value);
     }, 10);
   }
+});
+
+watch(() => props.data.lang, () => {
+  if (props.data.lang && props.data.lang.length == 0)
+    props.data.lang = null;
 });
 
 onMounted(() => {

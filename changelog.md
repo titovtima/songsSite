@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2]
+
+Date: 2025-12-11
+
+* Added song part language
+
+Frontend, backand and database updated.
+
 ## [1.0.1]
 
 Date: 2025-11-18 16:10

@@ -37,6 +37,10 @@ export function cloneWithDepth(object: any, depth: number): any {
     }
 }
 
+export function uniqueFromArr(arr: any[]): any[] {
+    return arr.filter((value, index, array) => array.indexOf(value) === index && value != null);
+}
+
 export function fitTextareaHeight(element: any) {
     element.style.height = 0;
     element.style.height = element.scrollHeight + 'px';
