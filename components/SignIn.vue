@@ -7,7 +7,8 @@
       <span @click="register = true" style="cursor: pointer; margin-left: 2rem;" 
         :style="{'text-decoration': register ? 'underline' : 'none'}">Зарегистрироваться</span>
     </template>
-    <div v-if="register" style="display: grid; grid-template-columns: max-content auto; gap: 0.5rem;">
+    <div v-if="register" style="display: grid;"
+        :style="{ 'grid-template-columns': isMobile ? 'max-content' : 'max-content auto', gap: isMobile ? '0' : '0.5rem' }">
       <label>
         Имя пользователя
       </label>
@@ -24,10 +25,13 @@
     <div v-else>
       <label>
         Имя пользователя
+        <br v-if="isMobile"/>
         <input ref="username_login" type="text" autocomplete="username"/>
       </label>
+      <br v-if="isMobile"/>
       <label>
         Пароль
+        <br v-if="isMobile"/>
         <input ref="password_login" type="password" autocomplete="password"/>
       </label>
     </div>
@@ -42,6 +46,8 @@
 <script setup lang="ts">
 const props = defineProps(['show']);
 const emit = defineEmits(['update:show']);
+
+const {isMobile} = useDevice();
 
 const username_login: Ref<any> = ref(null);
 const password_login: Ref<any> = ref(null);

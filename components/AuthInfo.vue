@@ -2,9 +2,9 @@
   <ModalWindow v-bind="$attrs" v-model:show="showInfo" fixed-size>
     <template #title>Пользователь</template>
     <div>{{ userData.username }}</div>
-    <div>
+    <div @click="editEmail = true">
       Email:
-      <span v-if="!editEmail" @click="editEmail = true">{{ userData.email }}</span>
+      <span v-if="!editEmail">{{ userData.email }}</span>
       <span v-else>
         <input ref="inputEmail" type="email" style="padding: 0.1rem; border: 1px solid black;"/>
         <button ref="saveEmail" @click.prevent="changeEmail" style="margin-left: 0.5rem;">Сохранить</button>
