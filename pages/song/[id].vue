@@ -65,8 +65,8 @@
       <pre v-if="!editMode" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
         toValue(songData).extra 
       }}</pre>
-      <textarea v-else v-model="songData.extra" class="p-2 w-full overflow-x-auto"
-          @input="(event: any) => fitTextareaHeight(event.target)"></textarea>
+      <textarea v-else v-model="songData.extra" style="field-sizing: content; padding: 0.5rem; width: 100%; overflow-x: auto;">
+      </textarea>
     </div>
   </div>
 </template>
@@ -75,7 +75,7 @@
 import SelectList from "~/components/SelectList.vue";
 import apiRequests from "~/utils/apiRequests";
 import { getSongData, type Song } from "~/utils/getData";
-import { fitTextareaHeight, getTransposedText } from "~/utils/global";
+import { getTransposedText } from "~/utils/global";
 
 const route = useRoute();
 const router = useRouter();

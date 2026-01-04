@@ -54,7 +54,7 @@
           <label>Темп:</label>
           <input type="number" v-model="data.bpm" style="background-color: var(--second-color);"/>
           <label>Доп:</label>
-          <textarea v-model="data.extra" style="background-color: var(--second-color);"></textarea>
+          <textarea v-model="data.extra" style="background-color: var(--second-color); field-sizing: content;"></textarea>
         </div>
       </div>
       <div style="flex: 0 1 2rem; margin-left: 1rem;">

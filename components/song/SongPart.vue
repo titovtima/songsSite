@@ -13,8 +13,8 @@
         }}</pre>
       </div>
       <div v-else>
-        <textarea ref="contentTextarea" v-model="data.data" class="w-full p-1" :class="{ chords: data.type != 'Text' }"
-            @input="event => fitTextareaHeight(event.target)"></textarea>
+        <textarea ref="contentTextarea" v-model="data.data" style="field-sizing: content;" class="w-full p-1" :class="{ chords: data.type != 'Text' }">
+        </textarea>
       </div>
     </div>
     <div v-if="editMode" style="flex: 0 1 2rem; margin-left: 1rem;">
@@ -35,36 +35,19 @@
 </template>
 
 <script setup lang="ts">
-import { fitTextareaHeight, getTransposedText } from '~/utils/global';
+import { getTransposedText } from '~/utils/global';
 
 const props = defineProps(['data', 'generalKey']);
 defineEmits(['updateOrder']);
 
 const editMode = useState('editMode');
 const keyShift = useState('keyShift', () => 0);
-const partDiv: any = ref(null);
-const mainContent: any = ref(null);
-const contentTextarea: any = ref(null);
 
 const originalKey = computed(() => (props.data.key != null) ? props.data.key : props.generalKey);
-
-watch([editMode, () => props.data], () => {
-  if (editMode.value) {
-    setTimeout(() => {
-      fitTextareaHeight(contentTextarea.value);
-    }, 10);
-  }
-});
 
 watch(() => props.data.lang, () => {
   if (props.data.lang && props.data.lang.length == 0)
     props.data.lang = null;
-});
-
-onMounted(() => {
-  if (editMode.value) {
-    fitTextareaHeight(contentTextarea.value);
-  }
 });
 
 function getTransposedPartText(original: number, shift: number) {
