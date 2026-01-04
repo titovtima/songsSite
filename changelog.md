@@ -1,8 +1,15 @@
 # Changelog
 
+## [1.1.1]
+
+Date: 2026-01-04
+
+* Auth and user windows small design fixes
+* Replace b and # for flat and sharp on save in chords parts
+
 ## [1.1.0]
 
-Date: 2026-01-03
+Date: 2026-01-04
 
 * Removed tailwind
 
@@ -14,7 +21,7 @@ Date: 2025-12-11
 
 * Added song part language
 
-Frontend, backand and database updated.
+Frontend, backend and database updated.
 
 ## [1.0.1]
 

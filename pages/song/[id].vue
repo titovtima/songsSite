@@ -72,6 +72,8 @@
 </template>
 
 <script setup lang="ts">
+import musicTheory from '@titovtima/music-theory';
+const { musicTextFromPlainText } = musicTheory;
 import SelectList from "~/components/SelectList.vue";
 import apiRequests from "~/utils/apiRequests";
 import { getSongData, type Song } from "~/utils/getData";
@@ -296,6 +298,7 @@ function updatePerformancesOrder(event: any) {
 const saveFunction = functionsRefs.saveFunction;
 saveFunction.value = () => {
   let numberSongId = Number(songId);
+  processSavingData();
   if (numberSongId) {
     console.log('saving data', songData.value);
     apiRequests.postSong(songId, songData.value)
@@ -318,6 +321,14 @@ saveFunction.value = () => {
       });
   } else {
     alert('Wrong song id');
+  }
+}
+
+function processSavingData() {
+  for (let part of songData.value.parts) {
+    if (part.type == 'Chords' || part.type == 'ChordsText') {
+      part.data = musicTextFromPlainText(part.data);
+    }
   }
 }
 </script>
