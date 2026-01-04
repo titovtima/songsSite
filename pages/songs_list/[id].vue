@@ -79,12 +79,15 @@ saveFunction.value = () => {
 
 <style scoped>
 .header {
-  @apply text-center text-4xl overflow-x-auto p-5;
+  text-align: center;
+  font-size: 2.25rem;
+  overflow-x: auto;
+  padding: 1.25rem;
 }
 
 @media (aspect-ratio < 1.2) {
   .header {
-    @apply text-2xl;
+    font-size: 1.5rem;
   }
 }
 </style>

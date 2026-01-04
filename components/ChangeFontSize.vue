@@ -1,11 +1,14 @@
 <template>
-  <div :class="{ 'min-h-[95px]': isMobile }" class="relative">
+  <div v-if="isMobile" style="position: relative; min-height: 95px;">
     <h3>Размер шрифта</h3>
-    <div v-if="isMobile" class="bottom-0 absolute">
+    <div style="bottom: 0; position: absolute; line-height: 0;">
       <img ref="plus" src="/plus-button.png" alt="увеличить"/>
       <img ref="minus" src="/minus-button.png" alt="уменьшить"/>
     </div>
-    <span v-else>
+  </div>
+  <div v-else style="display: flex; flex-direction: row; align-items: center;">
+    <h3>Размер шрифта</h3>
+    <span>
       <img ref="plus" src="/plus-button.png" alt="увеличить"/>
       <img ref="minus" src="/minus-button.png" alt="уменьшить"/>
     </span>
@@ -34,18 +37,32 @@ onMounted(() => {
 
 <style scoped>
 img {
-  @apply m-[15px] w-[50px] inline-block cursor-pointer;
+  margin: 15px;
+  width: 50px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.rootDiv {
+  min-height: 45px;
 }
 
 @media (aspect-ratio < 1) {
   img {
-    @apply m-[5px] w-[30px];
+    margin: 5px;
+    width: 30px;
+  }
+
+  .rootDiv {
+    min-height: 95px;
+    line-height: 95px;
   }
 }
 
 @media (aspect-ratio > 1) {
   h3 {
-    @apply inline-block w-[350px];
+    display: inline-block;
+    width: 350px;
   }
 }
 </style>

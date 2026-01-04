@@ -17,25 +17,25 @@
     </div>
     <RightsView v-model:data="songRights" :owner="songRights ? songRights.owner : null"/>
     <div v-if="songRights && editMode"><div style="display: flex; flex-direction: row;">
-      <label class="flex" style="align-items: center;">
+      <label style="display: flex; align-items: center;">
         Приватная
-        <input class="mx-1" type="checkbox" :disabled="!editMode || !userData.isAdmin"
+        <input style="margin: 0 0.25rem;" type="checkbox" :disabled="!editMode || !userData.isAdmin"
             :checked="!songData.public" @change="(event: any) => songData.public = !event.target.checked"/>
       </label>
-      <label v-if="userData.isAdmin" class="ml-5 flex" style="align-items: center;">
+      <label v-if="userData.isAdmin" style="display: flex; align-items: center; margin-left: 1.25rem;">
         В основном списке
-        <input class="mx-1" type="checkbox" :disabled="!editMode" v-model="songData.inMainList"/>
+        <input style="margin: 0 0.25rem;" type="checkbox" :disabled="!editMode" v-model="songData.inMainList"/>
       </label>
     </div></div>
     <div v-else-if="songRights && !songData.public">Приватная</div>
-    <KeySwitch v-if="songData.key != null || editMode" v-model:original="songData.key" class="mt-2"/>
+    <KeySwitch v-if="songData.key != null || editMode" v-model:original="songData.key" style="margin-top: 0.5rem;"/>
     <SelectList v-if="langList.length > 0" :deselect="false" :options="langList" :selected="currentLang" @select-option="option => {console.log(option); return currentLang = option}"/>
-    <div class="parts-list overflow-x-auto">
-      <div class="overflow-x-hidden min-w-min">
+    <div style="overflow-x: auto;" class="parts-list">
+      <div style="overflow-x: hidden; min-width: min-content;">
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
             @update-order="(event) => { updatePartsOrder(event); }"/>
         <div v-if="editMode" style="display: flex; align-items: center; flex-direction: column">
-          <button class="mb-5 p-2 bg-white" @click="() => { addPart(); }">
+          <button style="margin-bottom: 1.25rem; padding: 0.5rem; background-color: #fff;" @click="() => { addPart(); }">
             Добавить часть
           </button>
         </div>
@@ -62,7 +62,7 @@
              link: ''})">Добавить источник</div>
     </div>
     <div>
-      <pre v-if="!editMode" class="p-2 w-full overflow-x-auto" ref="extraText">{{ 
+      <pre v-if="!editMode" style="padding: 0.5rem; width: 100%; overflow-x: auto;" ref="extraText">{{ 
         toValue(songData).extra 
       }}</pre>
       <textarea v-else v-model="songData.extra" style="field-sizing: content; padding: 0.5rem; width: 100%; overflow-x: auto;">
@@ -324,7 +324,9 @@ saveFunction.value = () => {
 
 <style scoped>
 .type-button {
-  @apply p-3 bg-white inline-block;
+  padding: 0.75rem;
+  background-color: #fff;
+  display: inline-block;
 }
 
 .type-button.hidden {
@@ -332,16 +334,20 @@ saveFunction.value = () => {
 }
 
 .type-button.active {
-  @apply border-black border font-bold;
+  border: 1px solid #000;
+  font-weight: 700;
 }
 
 .header {
-  @apply text-center text-4xl overflow-x-auto p-5;
+  text-align: center;
+  font-size: 2.25rem;
+  overflow-x: auto;
+  padding: 1.25rem;
 }
 
 @media (aspect-ratio < 1.2) {
   .header {
-    @apply text-2xl;
+    font-size: 1.5rem;
   }
 }
 

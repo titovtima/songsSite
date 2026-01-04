@@ -22,13 +22,6 @@ export default defineNuxtConfig({
   //   }
   // },
 
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
-
   components: [
     {
       path: '~/components',

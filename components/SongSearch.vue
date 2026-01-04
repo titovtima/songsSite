@@ -1,6 +1,7 @@
 <template>
   <div>
-    <input type="text" placeholder="Поиск песни по словам" ref="searchInput" class="w-full border border-gray-400 p-1">
+    <input type="text" placeholder="Поиск песни по словам" ref="searchInput"
+      style="width: 100%; border: 1px solid #9ca3af; padding: 0.25rem;">
     <SongList :list="displayList" @remove="song => $emit('remove-song', song)"/>
     <div :style="{ display: allSongsDisplayList.length > 0 ? 'block' : 'none'}" style="height: 2px; background: #888; width: 100%;"></div>
     <i :style="{ display: allSongsDisplayList.length > 0 ? 'block' : 'none'}" style="color: #888;">

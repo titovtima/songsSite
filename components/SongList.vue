@@ -2,7 +2,7 @@
   <ul>
     <ClientOnly>
       <li v-for="song in list">
-        <button v-if="editMode" class="aspect-square w-4 my-2" 
+        <button v-if="editMode" style="aspect-ratio: 1/1; width: 1rem; margin: 0.5rem 0;"
             @click="() => { $emit('remove', song); }">
           <img src="/assets/svg/cross2.svg"/>
         </button> 
@@ -27,6 +27,7 @@ function clickLink(songId: number) {
 
 <style scoped>
 .list-ref {
-  @apply text-black;
+  text-decoration: none;
+  color: #000;
 }
 </style>

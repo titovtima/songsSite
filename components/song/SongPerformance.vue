@@ -9,7 +9,7 @@
       <div v-if="data.album">Альбом: {{ data.album }}<span v-if="data.date">({{ data.date }})</span></div>
       <div v-else-if="data.date">Дата: {{ data.date }}</div>
       <a v-if="data.link" :href="data.link" style="color: rgb(0, 102, 204);">{{ data.link }}</a>
-      <audio controls v-if="data.audio" preload="metadata" :src="apiRequests.getAudioLink(data.audio)"></audio>
+      <audio controls v-if="data.audio" preload="metadata" style="display: block;" :src="apiRequests.getAudioLink(data.audio)"></audio>
       <div v-if="data.lang && data.lang != 'rus'">Язык: {{ (langNames as any)[data.lang] }}</div>
       <div v-if="data.key != null">Тональность: {{ musicTheory.keyName(musicTheory.getCircleKeys()[data.key % 24]) }}</div>
       <div v-if="data.bpm">Темп: {{ data.bpm }}</div>
@@ -58,15 +58,15 @@
         </div>
       </div>
       <div style="flex: 0 1 2rem; margin-left: 1rem;">
-        <button class="block aspect-square w-8 my-2" 
+        <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
             @click="() => { $emit('updateOrder', { perf: data, action: 'delete' }); }">
           <img src="/assets/svg/cross2.svg"/>
         </button>
-        <button v-if="data.ord > 1" class="block aspect-square w-8 my-2"
+        <button v-if="data.ord > 1" style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
             @click="() => { $emit('updateOrder', { perf: data, action: 'up'}); }">
           <img src="/assets/svg/arrow_up.svg"/>
         </button>
-        <button class="block aspect-square w-8 my-2"
+        <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
             @click="() => { $emit('updateOrder', { perf: data, action: 'down'}); }">
           <img src="/assets/svg/arrow_down.svg"/>
         </button>

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0]
+
+Date: 2026-01-03
+
+* Removed tailwind
+
+Frontend updated.
+
 ## [1.0.2]
 
 Date: 2025-12-11

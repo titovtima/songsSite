@@ -2,7 +2,7 @@
   <div class="rootDiv" style="background-color: var(--second-color);">
     <StringListInputInner v-for="string in localList" :value="string"
         @remove="() => { localList = localList.filter(value => value != string); console.log('localList', localList); $emit('update:list', localList); }"/>
-    <span contenteditable @keydown="event => { keydown(event); }" class="editable-span px-0.5"></span>
+    <span contenteditable @keydown="event => { keydown(event); }" style="padding: 0 0.1rem;" class="editable-span px-0.5"></span>
   </div>
 </template>
 

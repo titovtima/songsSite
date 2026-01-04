@@ -1,6 +1,6 @@
 <template>
   <YandexMetrika />
-  <div ref="scrollDiv" class="overflow-y-auto h-full p-[20px] pb-[100px]">
+  <div ref="scrollDiv" style="overflow-y: auto; height: 100%; padding: 20px 20px 100px;">
     <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
   </div>

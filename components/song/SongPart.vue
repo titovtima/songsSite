@@ -1,32 +1,33 @@
 <template>
-  <div ref="partDiv" class="flex my-5 bg-white p-3 w-full min-w-min">
+  <div ref="partDiv" style="display: flex; margin: 1.25rem 0; background: white; padding: 0.75rem; width: 100%; min-width: min-content">
     <div style="flex: 1 1 max-content; width: 100%;">
-      <div class="text-xl border-b border-black font-bold" v-if="data.name || editMode">
-        <span v-if="!editMode" class="p-1">{{ data.name }}</span>
-        <input v-else type="text" class="w-full p-1" v-model="data.name">
+      <div style="font-size: 1.25rem; border-bottom: 1px solid black; font-weight: 700;" v-if="data.name || editMode">
+        <span v-if="!editMode" style="padding: 0.25rem;">{{ data.name }}</span>
+        <input v-else type="text" style="width: 100%; padding: 0.25rem;" v-model="data.name">
       </div>
-      <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" class="mb-1"/>
+      <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" style="margin-bottom: 0.25rem;"/>
       <input v-if="editMode" type="text" v-model="data.lang">
       <div v-if="!editMode">
-        <pre class="text-base p-1" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
+        <pre style="font-size: 1rem; padding: 0.25rem;" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
           toValue(getTransposedPartText(originalKey, keyShift))
         }}</pre>
       </div>
       <div v-else>
-        <textarea ref="contentTextarea" v-model="data.data" style="field-sizing: content;" class="w-full p-1" :class="{ chords: data.type != 'Text' }">
+        <textarea v-model="data.data" :class="{ chords: data.type != 'Text' }"
+          style="width: 100%; padding: 0.25rem; field-sizing: content;">
         </textarea>
       </div>
     </div>
     <div v-if="editMode" style="flex: 0 1 2rem; margin-left: 1rem;">
-      <button class="block aspect-square w-8 my-2" 
+      <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
           @click="() => { $emit('updateOrder', { part: data, action: 'delete'}); }">
         <img src="/assets/svg/cross2.svg"/>
       </button>
-      <button v-if="data.ord > 1" class="block aspect-square w-8 my-2"
+      <button v-if="data.ord > 1" style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
           @click="() => { $emit('updateOrder', { part: data, action: 'up'}); }">
         <img src="/assets/svg/arrow_up.svg"/>
       </button>
-      <button class="block aspect-square w-8 my-2"
+      <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
           @click="() => { $emit('updateOrder', { part: data, action: 'down'}); }">
         <img src="/assets/svg/arrow_down.svg"/>
       </button>

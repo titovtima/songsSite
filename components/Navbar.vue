@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="overflow-hidden">
+    <nav style="overflow: hidden;">
       <ul>
         <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
         <li @click="$emit('clickSettings')">настройки</li>
@@ -85,10 +85,13 @@ function copyUrlToClipboard() {
 
 <style scoped>
 li {
-  @apply float-right cursor-pointer ml-4;
+  float: right;
+  cursor: pointer;
+  margin-left: 1rem;
 }
 
 li.active {
-  @apply cursor-default text-gray-400;
+  cursor: default;
+  color: #9ca3af;
 }
 </style>

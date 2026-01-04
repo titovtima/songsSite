@@ -1,7 +1,7 @@
 <template>
-  <span class="p-0.5 mx-0.5" style="background-color: var(--bg-color);">
+  <span style="padding: 0.1rem; margin: 0 0.1rem; background-color: var(--bg-color);">
     <span>{{ value }}</span>
-    <img src="/assets/svg/cross.svg" @click="$emit('remove')" class="w-1.5 mx-0.5 inline"/>
+    <img src="/assets/svg/cross.svg" @click="$emit('remove')" style="display: inline; width: 0.4rem; margin: 0 0.1rem;"/>
   </span>
 </template>
 

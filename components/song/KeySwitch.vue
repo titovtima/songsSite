@@ -55,10 +55,16 @@ function clickKey(key: any) {
 <style scoped>
 li {
   font-family: 'JBMusic', monospace;
-  @apply inline-block border-b-[1px] border-black ml-1 min-w-[1.25rem] cursor-pointer;
+  display: inline-block;
+  border-bottom: 1px solid black;
+  margin-left: 0.25rem;
+  min-width: 1.25rem;
+  cursor: pointer;
 }
 
 li.active {
-  @apply font-bold border-b-2 cursor-default;
+  font-weight: 700;
+  border-bottom: 2px solid black;
+  cursor: default;
 }
 </style>
