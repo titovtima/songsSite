@@ -1,6 +1,6 @@
 <template>
   <YandexMetrika />
-  <div ref="scrollDiv" style="overflow-y: auto; height: 100%; padding: 20px 20px 100px;">
+  <div ref="scrollDiv" style="overflow-y: auto; height: 100%; padding: 20px;">
     <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
   </div>
@@ -41,7 +41,7 @@ function watchScroll() {
 
 body {
   background: #F4F4F4;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   --bg-color: #f4f4f4;
   --second-color: #fff;
