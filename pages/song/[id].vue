@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h1 class="header" :contenteditable="editMode" @input="(event: any) => { songData.name = event.target.textContent; }">
+    <h1 v-if="!editMode" class="header" @input="(event: any) => { songData.name = event.target.textContent; }">
       {{ songData.name ? songData.name : '' }}
     </h1>
+    <input v-else v-model="songData.name" class="header"/>
     <div style="display: flex; justify-content: center;">
       <button class="type-button" ref="textTypeButton" style="flex: 1 0 0; margin: 0 0.5rem;"
               :class="{ active: view == 'Text', hidden: toValue(textParts).length == 0 && !editMode }">Текст
@@ -354,6 +355,9 @@ function processSavingData() {
   font-size: 2.25rem;
   overflow-x: auto;
   padding: 1.25rem;
+  display: block;
+  width: 100%;
+  background: none;
 }
 
 @media (aspect-ratio < 1.2) {

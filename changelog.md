@@ -6,6 +6,9 @@ Date: 2026-01-04
 
 * Auth and user windows small design fixes
 * Replace b and # for flat and sharp on save in chords parts
+* Fix header input
+
+Frontend updated.
 
 ## [1.1.0]
 
