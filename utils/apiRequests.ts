@@ -184,6 +184,21 @@ const apiRequests = {
             body: file,
         });
     },
+
+    resetPassword: async (userId: string, token: string, newPassword: string | null) => {
+        let requestInit: any = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        if (newPassword) {
+            requestInit.body = JSON.stringify({password: newPassword});
+        } else {
+            requestInit.body = '{}';
+        }
+        return apiRequests.baseRequest('/reset_password/' + userId + '/' + token, requestInit);
+    },
 };
 
 export default apiRequests;
