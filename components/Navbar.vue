@@ -1,7 +1,10 @@
 <template>
   <div>
     <nav style="overflow: hidden;">
-      <ul>
+      <ul v-if="navState.onlyMain">
+        <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
+      </ul>
+      <ul v-else>
         <li :class="{ active: route.path == '/' }" @click="router.push('/')">главная</li>
         <li @click="$emit('clickSettings')">настройки</li>
         <li v-if="false" :class="{ active: route.path.match(/\/songs_lists/) }" @click="listsButtonClick">
@@ -16,7 +19,7 @@
         </li>
       </ul>
     </nav>
-    <div style="overflow: hidden;">
+    <div v-if="navState.showCopyLink" style="overflow: hidden;">
       <span ref="copyRef" style="float: right; cursor: pointer;" @click="copyUrlToClipboard">Скопировать ссылку</span>
     </div>
   </div>
@@ -33,7 +36,7 @@ const saveFunction = functionsRefs.saveFunction;
 
 const copyRef = ref();
 
-const navState: any = useState('navigation', () => { return { listId: null, prev: null }; });
+const navState: any = useState('navigation');
 
 function listsButtonClick() {
   if (navState.value.listId) {
