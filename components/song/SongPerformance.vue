@@ -38,7 +38,7 @@
           <input style="display: block; width: 100%; background-color: var(--second-color);" type="text" placeholder="ссылка" v-model="data.link"/>
         </div>
         <input ref="loadFile" name="file" type="file" accept="audio/mpeg"/>
-        <audio ref="audioInEdit" controls></audio>
+        <audio ref="audioInEdit" style="display: block;" controls></audio>
         <div style="display: grid; grid-template-columns: max-content auto; row-gap: 0.5rem; margin-top: 0.5rem;">
           <label>Язык:</label>
           <div>
