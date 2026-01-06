@@ -1,6 +1,7 @@
 <template>
-  <div ref="partDiv" style="display: flex; margin: 1.25rem 0; background: white; padding: 0.75rem; width: 100%; min-width: min-content">
-    <div style="flex: 1 1 max-content; width: 100%;">
+  <div ref="partDiv" style="display: flex; gap: 1rem; margin: 1.25rem 0; background: white; padding: 0.75rem; width: 100%;"
+      :style="{ 'max-width': editMode ? 'calc(100vw - 40px)' : 'none', 'min-width': editMode ? '0' : 'min-content' }">
+    <div style="flex: 1 1 max-content;" :style="{ 'max-width': editMode ? 'calc(100% - 3rem)' : 'none' }">
       <div style="font-size: 1.25rem; border-bottom: 1px solid black; font-weight: 700;" v-if="data.name || editMode">
         <span v-if="!editMode" style="padding: 0.25rem;">{{ data.name }}</span>
         <input v-else type="text" style="width: 100%; padding: 0.25rem;" v-model="data.name">
@@ -14,20 +15,20 @@
       </div>
       <div v-else>
         <textarea v-model="data.data" :class="{ chords: data.type != 'Text' }"
-          style="width: 100%; padding: 0.25rem; field-sizing: content;">
+          style="padding: 0.25rem; field-sizing: content; min-width: 100%;">
         </textarea>
       </div>
     </div>
-    <div v-if="editMode" style="flex: 0 1 2rem; margin-left: 1rem;">
-      <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
+    <div v-if="editMode" style="flex: 0 1 2rem;">
+      <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0; background: none;" 
           @click="() => { $emit('updateOrder', { part: data, action: 'delete'}); }">
         <img src="/assets/svg/cross2.svg"/>
       </button>
-      <button v-if="data.ord > 1" style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
+      <button v-if="data.ord > 1" style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0; background: none;" 
           @click="() => { $emit('updateOrder', { part: data, action: 'up'}); }">
         <img src="/assets/svg/arrow_up.svg"/>
       </button>
-      <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
+      <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0; background: none;" 
           @click="() => { $emit('updateOrder', { part: data, action: 'down'}); }">
         <img src="/assets/svg/arrow_down.svg"/>
       </button>

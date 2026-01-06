@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.3]
+
+Date: 2026-01-06
+
+* Design fixes on song edit mode
+
+Frontend updated.
+
+## [1.1.2]
+
+Date: 2026-01-05
+
+* Reset password page
+
+Frontend updated.
+
 ## [1.1.1]
 
 Date: 2026-01-04

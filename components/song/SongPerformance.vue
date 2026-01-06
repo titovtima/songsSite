@@ -15,8 +15,8 @@
       <div v-if="data.bpm">Темп: {{ data.bpm }}</div>
       <pre v-if="data.extra">{{ data.extra }}</pre>
     </div>
-    <div v-else style="display: flex;">
-      <div style="flex: 1 1 max-content; width: 100%;">
+    <div v-else style="display: flex; gap: 1rem;">
+      <div style="flex: 1 1 max-content; max-width: calc(100% - 3rem);">
         <label style="display: flex; align-items: center;">
           <input type="checkbox" v-model="data.isOriginal"/>
           <span style="margin-left: 0.5rem;">оригинал</span>
@@ -57,16 +57,16 @@
           <textarea v-model="data.extra" style="background-color: var(--second-color); field-sizing: content;"></textarea>
         </div>
       </div>
-      <div style="flex: 0 1 2rem; margin-left: 1rem;">
-        <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
+      <div style="flex: 0 1 2rem;">
+        <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0; background: none;" 
             @click="() => { $emit('updateOrder', { perf: data, action: 'delete' }); }">
           <img src="/assets/svg/cross2.svg"/>
         </button>
-        <button v-if="data.ord > 1" style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
+        <button v-if="data.ord > 1" style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0; background: none;" 
             @click="() => { $emit('updateOrder', { perf: data, action: 'up'}); }">
           <img src="/assets/svg/arrow_up.svg"/>
         </button>
-        <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0;" 
+        <button style="display: block; aspect-ratio: 1/1; width: 2rem; margin: 0.5rem 0; background: none;" 
             @click="() => { $emit('updateOrder', { perf: data, action: 'down'}); }">
           <img src="/assets/svg/arrow_down.svg"/>
         </button>
