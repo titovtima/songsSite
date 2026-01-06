@@ -23,6 +23,8 @@ const showSettingsModal = ref(false);
 onMounted(() => {
   useState('mainScrollDiv').value = scrollDiv.value;
   watchScroll();
+
+  document.body.style.height = '100dvh';
 });
 
 function watchScroll() {
