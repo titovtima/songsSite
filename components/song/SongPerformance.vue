@@ -86,8 +86,8 @@ const editMode = useState('editMode');
 const loadFile: Ref<any> = ref(null);
 const formLoadingFile: Ref<any> = ref(null);
 const audioInEdit: Ref<any> = ref(null);
-
-const langNames = { 'rus': 'русский', 'eng': 'английский', 'fin': 'финский', 'swe': 'шведский', 'heb': 'иврит' };
+const langNames = { 'rus': 'русский', 'eng': 'английский', 'fin': 'финский', 'swe': 'шведский', 'heb': 'иврит',
+  'spa': 'испанский', 'por': 'португальский', 'eng+heb': 'английский, иврит' };
 const langList: string[] = [];
 for (let lang in langNames) langList.push(lang);
 
