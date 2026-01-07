@@ -9,13 +9,12 @@
       <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" style="margin-bottom: 0.25rem;"/>
       <input v-if="editMode" type="text" v-model="data.lang">
       <div v-if="!editMode">
-        <pre style="font-size: 1rem; padding: 0.25rem;" ref="mainContent" :class="{ chords: data.type != 'Text' }">{{
+        <pre style="font-size: 1rem; padding: 0.25rem;" ref="mainContent">{{
           toValue(getTransposedPartText(originalKey, keyShift))
         }}</pre>
       </div>
       <div v-else>
-        <textarea v-model="data.data" :class="{ chords: data.type != 'Text' }"
-          style="padding: 0.25rem; field-sizing: content; min-width: 100%; max-width: 100%;">
+        <textarea v-model="data.data" style="padding: 0.25rem; field-sizing: content; min-width: 100%; max-width: 100%;">
         </textarea>
       </div>
     </div>
@@ -59,10 +58,6 @@ function getTransposedPartText(original: number, shift: number) {
 </script>
 
 <style scoped>
-.chords {
-  font-family: JBMusic, monospace;
-}
-
 textarea {
   overflow-x: auto;
   white-space: nowrap;

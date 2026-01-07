@@ -54,7 +54,6 @@ function clickKey(key: any) {
 
 <style scoped>
 li {
-  font-family: 'JBMusic', monospace;
   display: inline-block;
   border-bottom: 1px solid black;
   margin-left: 0.25rem;

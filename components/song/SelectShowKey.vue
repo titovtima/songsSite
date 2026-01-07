@@ -1,7 +1,7 @@
 <template>
   <SelectList v-if="selectMode" :deselect="deselect" :options="keys.map(key => keyName(key))" style="display: inline;"
     :selected="selected ? keyName(keys[selected]) : null" @select-option="selectName"/>
-  <span v-else @click="selectMode = true" style="font-family: 'JBMusic';">
+  <span v-else @click="selectMode = true">
     {{ selected ? keyName(keys[selected]) : 'none' }}
   </span>
 </template>

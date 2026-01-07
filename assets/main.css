@@ -13,6 +13,10 @@ h1, h2, h3, h4, h5, h6 {
     border-color: #e5e7eb;
 }
 
+*, pre {
+  font-family: 'Anonymous Pro Music', 'Anonymous Pro', ui-monospace, SFMono-Regular, monospace;
+}
+
 ol, ul, menu {
     list-style: none;
 }
@@ -36,6 +40,20 @@ button, input, optgroup, select, textarea {
 @font-face {
     font-family: 'JBMusic';
     src: url("/assets/fonts/JBMusic-Regular.otf") format('opentype');
+}
+
+@font-face {
+    font-family: 'Anonymous Pro Music';
+    src: url("/assets/fonts/AnonymousPro-Music-Regular.otf") format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro Music';
+    src: url("/assets/fonts/AnonymousPro-Music-Bold.otf") format('opentype');
+    font-weight: bold;
+    font-style: normal;
 }
 
 @font-face {
