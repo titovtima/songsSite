@@ -15,7 +15,7 @@
       </div>
       <div v-else>
         <textarea v-model="data.data" :class="{ chords: data.type != 'Text' }"
-          style="padding: 0.25rem; field-sizing: content; min-width: 100%;">
+          style="padding: 0.25rem; field-sizing: content; min-width: 100%; max-width: 100%;">
         </textarea>
       </div>
     </div>
