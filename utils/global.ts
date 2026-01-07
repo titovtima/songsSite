@@ -115,6 +115,27 @@ export function sortSongs(list: {name: string}[]): any[] {
     });
 }
 
+export function numberToList(n: number | null, base: number): number[] {
+  if (n == null) return [];
+  let list = [];
+  while (n > base - 1) {
+    list.push(n % base);
+    n = Math.floor(n / base);
+  }
+  list.push(n);
+  return list;
+}
+
+export function listToNumber(list: number[], base: number): number | null {
+  if (list.length == 0) return null;
+  let result = 0;
+  for (let i = list.length - 1; i >= 0; i--) {
+    result *= base;
+    result += list[i];
+  }
+  return result;
+}
+
 export function getHost(): string {
     return import.meta.server ?
         (process.env.API_HOST ? process.env.API_HOST : 'songs.istokspb.org') :

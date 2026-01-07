@@ -1,5 +1,5 @@
 <template>
-  <div class="rootDiv" style="margin: 1rem 0; padding: 0.5rem; background-color: #fff;">
+  <div class="rootDiv" style="margin: 1rem 0; padding: 0.5rem; background-color: var(--bg-color);">
     <div v-if="!editMode">
       <div v-if="data.isOriginal || data.isMain"><b>{{ (data.isOriginal) ? 'Оригинал' : 'Источник' }}</b></div>
       <div>
@@ -11,7 +11,12 @@
       <a v-if="data.link" :href="data.link" style="color: rgb(0, 102, 204);">{{ data.link }}</a>
       <audio controls v-if="data.audio" preload="metadata" style="display: block;" :src="apiRequests.getAudioLink(data.audio)"></audio>
       <div v-if="data.lang && data.lang != 'rus'">Язык: {{ (langNames as any)[data.lang] }}</div>
-      <div v-if="data.key != null">Тональность: {{ musicTheory.keyName(musicTheory.getCircleKeys()[data.key % 24]) }}</div>
+      <div v-if="data.key != null">
+        Тональность:
+        <span>
+          {{ numberToList(data.key, 24).map(key => musicTheory.keyName(musicTheory.getCircleKeys()[key])).join(',') }}
+        </span>
+      </div>
       <div v-if="data.bpm">Темп: {{ data.bpm }}</div>
       <pre v-if="data.extra">{{ data.extra }}</pre>
     </div>
@@ -50,7 +55,7 @@
           <label>Дата:</label>
           <input v-model="data.date" style="background-color: var(--second-color);"/>
           <label>Тональность:</label>
-          <KeySwitch v-model:original="data.key"/>
+          <SelectMultipleKeys v-model:keys="data.key"/>
           <label>Темп:</label>
           <input type="number" v-model="data.bpm" style="background-color: var(--second-color);"/>
           <label>Доп:</label>
@@ -77,6 +82,7 @@
 
 <script setup lang="ts">
 import musicTheory from '@titovtima/music-theory';
+import { numberToList } from '~/utils/global';
 
 const props = defineProps(['data']);
 defineEmits(['updateOrder']);
