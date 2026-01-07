@@ -104,15 +104,18 @@ watch(songRights, (rights, oldRights) => {
 const langList = computed(() => {
   let result = uniqueFromArr(songData.value.parts.filter(part => part.type == view.value).map(part => part.lang));
   if (currentLang.value == null) {
-    if (result.length > 0) {
-      if (result.includes('rus'))
-        currentLang.value = 'rus';
-      else
-        currentLang.value = result[0];
-    }
+    setLang(result);
   }
   return result;
 });
+function setLang(list = langList.value) {
+  if (list.length > 0) {
+    if (list.includes('rus'))
+      currentLang.value = 'rus';
+    else
+      currentLang.value = list[0];
+  }
+}
 const currentLang: Ref<string | null> = ref(null);
 
 const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
@@ -128,6 +131,12 @@ const viewParts = computed(() => {
     (part.lang == currentLang.value || part.lang == undefined || part.lang == null || editMode.value || currentLang.value == null))
     .sort(part => part.ord);
 });
+
+watch(view, () => {
+  if (langList.value.length > 0 && !langList.value.includes(currentLang.value)) {
+    setLang();
+  }
+})
 
 const editMode: Ref<boolean> = useState('editMode');
 if (route.query['edit']) {
@@ -167,6 +176,10 @@ if (songId == 'new') {
     let [data, loadPromise] = getSongData(Number(songId));
     await loadPromise;
     songData.value = data.value;
+    if (view.value == 'ChordsText' && chordsTextParts.value.length == 0)
+      view.value = 'Text';
+    if (view.value == 'Chords' && chordsParts.value.length == 0)
+      view.value = 'Text';
   } catch (e) {
     throw createError({
       statusCode: 404,
