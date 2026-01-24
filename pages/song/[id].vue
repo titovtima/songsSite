@@ -36,7 +36,7 @@
         <SongPart edit-mode v-for="part in viewParts" :data="part" :general-key="songData.key"
             @update-order="(event) => { updatePartsOrder(event); }"/>
         <div v-if="editMode" style="display: flex; align-items: center; flex-direction: column">
-          <button style="margin-bottom: 1.25rem; padding: 0.5rem; background-color: #fff;" @click="() => { addPart(); }">
+          <button style="margin: 1.25rem 0; padding: 0.5rem; background-color: #fff;" @click="() => { addPart(); }">
             Добавить часть
           </button>
         </div>

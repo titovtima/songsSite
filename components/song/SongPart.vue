@@ -1,20 +1,20 @@
 <template>
-  <div ref="partDiv" style="display: flex; gap: 1rem; margin: 1.25rem 0; background: white; padding: 0.75rem; width: 100%;"
+  <div ref="partDiv" class="partDiv" style="display: flex; gap: 1rem;"
       :style="{ 'max-width': editMode ? 'calc(100vw - 40px)' : 'none', 'min-width': editMode ? '0' : 'min-content' }">
     <div style="flex: 1 1 max-content;" :style="{ 'max-width': editMode ? 'calc(100% - 3rem)' : 'none' }">
       <div style="font-size: 1.25rem; border-bottom: 1px solid black; font-weight: 700;" v-if="data.name || editMode">
         <span v-if="!editMode" style="padding: 0.25rem;">{{ data.name }}</span>
-        <input v-else type="text" style="width: 100%; padding: 0.25rem;" v-model="data.name">
+        <input v-else type="text" placeholder="название" style="width: 100%; padding: 0.25rem;" v-model="data.name">
       </div>
       <KeySwitch v-if="data.key != null || editMode" v-model:original="data.key" :edit="editMode" style="margin-bottom: 0.25rem;"/>
-      <input v-if="editMode" type="text" v-model="data.lang">
+      <input v-if="editMode" type="text" v-model="data.lang" placeholder="язык" style="background-color: var(--second-color); margin-bottom: 2px;">
       <div v-if="!editMode">
         <pre style="font-size: 1rem; padding: 0.25rem;" ref="mainContent">{{
           toValue(getTransposedPartText(originalKey, keyShift))
         }}</pre>
       </div>
       <div v-else>
-        <textarea v-model="data.data" style="padding: 0.25rem; field-sizing: content; min-width: 100%; max-width: 100%;">
+        <textarea v-model="data.data" style="padding: 0.25rem; background-color: var(--second-color); field-sizing: content; min-width: 100%; max-width: 100%;">
         </textarea>
       </div>
     </div>
@@ -61,5 +61,14 @@ function getTransposedPartText(original: number, shift: number) {
 textarea {
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.partDiv {
+  --bg-color: #fff;
+  --second-color: #f4f4f4;
+  margin: 1.25rem 0;
+  background: var(--bg-color);
+  padding: 0.75rem;
+  width: 100%;
 }
 </style>
