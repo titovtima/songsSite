@@ -28,12 +28,30 @@ onMounted(() => {
 });
 
 function watchScroll() {
-  scrollDiv.value.addEventListener('scroll', () => {
-    if (useState('watchScroll').value) {
-      sessionStorage.setItem(route.path + ':ScrollTop', scrollDiv.value.scrollTop.toString());
+  if (useState('watchScroll').value) {
+    let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
+    console.log(oldScroll);
+    if (oldScroll && Number(oldScroll)) {
+      scrollDiv.value.scrollTop = Number(oldScroll);
     }
-  });
+
+    scrollDiv.value.addEventListener('scroll', () => {
+      if (useState('watchScroll').value) {
+        sessionStorage.setItem(route.path + ':ScrollTop', scrollDiv.value.scrollTop.toString());
+      }
+    });
+  }
 }
+
+// function setAndWatchScroll() {
+//   const scrollDiv: Ref<any> = useState('mainScrollDiv');
+//   let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
+//   console.log(oldScroll);
+//   if (oldScroll && Number(oldScroll)) {
+//     scrollDiv.value.scrollTop = Number(oldScroll);
+//   }
+//   useState('watchScroll').value = true;
+// }
 </script>
 
 <style>

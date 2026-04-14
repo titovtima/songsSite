@@ -24,7 +24,7 @@ const allSongsDisplayList: Ref<Array<any>> = ref([]);
 
 const route = useRoute();
 
-const allSongsData = getAllSongsData();
+const allSongsData = getAllSongsData(); 
 
 watch(() => props.searchList, () => { updateLists(); });
 
@@ -33,12 +33,14 @@ onMounted(() => {
     updateLists();
   }
   setAndWatchSearchText();
-  let interval = setInterval(() => {
-    try {
-      setAndWatchScroll();
-      clearInterval(interval);
-    } catch (e) {}
-  }, 100);
+  useState('watchScroll').value = true;
+  // setScroll();
+  // let interval = setInterval(() => {
+  //   try {
+  //     setScroll();
+  //     clearInterval(interval);
+  //   } catch (e) {}
+  // }, 1000);
 });
 
 function updateLists() {
@@ -57,21 +59,33 @@ function updateLists() {
 
 function setAndWatchSearchText() {
   let oldSearchText = sessionStorage.getItem(route.path + ':SearchText');
-  if (oldSearchText) {
-    searchInput.value.value = oldSearchText;
+  let oldSearchTextTime: any = sessionStorage.getItem(route.path + ':SearchTextTime');
+  if (oldSearchTextTime) oldSearchTextTime = Number(oldSearchTextTime);
+  console.log(oldSearchText, oldSearchTextTime);
+  console.log(new Date().getTime(), new Date().getTime() - oldSearchTextTime);
+  if (oldSearchTextTime && ((new Date().getTime() - oldSearchTextTime) < 1000 * 60 * 15)) {
+    if (oldSearchText) {
+      searchInput.value.value = oldSearchText;
+      sessionStorage.setItem(route.path + ':SearchTextTime', new Date().getTime().toString());
+      updateLists();
+    }
+    setTimeout(() => {
+      setScroll();
+    }, 1000);
   }
+  // setAndWatchScroll();
   searchInput.value.addEventListener('input', () => {
     sessionStorage.setItem(route.path + ':SearchText', searchInput.value.value);
+    sessionStorage.setItem(route.path + ':SearchTextTime', new Date().getTime().toString());
   })
 }
 
-
-function setAndWatchScroll() {
+function setScroll() {
   const scrollDiv: Ref<any> = useState('mainScrollDiv');
   let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
+  console.log(oldScroll);
   if (oldScroll && Number(oldScroll)) {
     scrollDiv.value.scrollTop = Number(oldScroll);
   }
-  useState('watchScroll').value = true;
 }
 </script>
