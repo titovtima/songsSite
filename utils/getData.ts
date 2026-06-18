@@ -128,6 +128,10 @@ export function getSongData(songId: number): [Ref<Song>, Promise<void> ] {
         songsData.value.set(songId, response);
         if (import.meta.client)
             localStorage.setItem('songsData', JSON.stringify(Object.fromEntries(songsData.value)));
+    }).catch(e => {
+        if (e.status == 404) {
+            songsData.value.delete(songId);
+        }
     });
     return [computed(() => {
         let songData = songsData.value.get(songId);

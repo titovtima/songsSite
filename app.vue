@@ -19,24 +19,12 @@ watchEffect(() => {
 useHead({link: [{rel: 'manifest', href: '/manifest.json'}]})
 
 const showSettingsModal = ref(false);
-const localStoragePrecachedStatusKey = 'precachedApi';
 
 onMounted(() => {
   useState('mainScrollDiv').value = scrollDiv.value;
   watchScroll();
 
   document.body.style.height = '100dvh';
-
-  let status = localStorage.getItem(localStoragePrecachedStatusKey);
-  console.log('precache api status', status);
-  if (status == null || new Date().getTime() - Number(status) >= 1000 * 60 * 60 * 24 * 10) {
-    for (let i = 0; i < 1000; i++) {
-      try {
-        apiRequests.getSong(i);
-      } catch {}
-    }
-    localStorage.setItem(localStoragePrecachedStatusKey, new Date().getTime().toString());
-  }
 });
 
 function watchScroll() {

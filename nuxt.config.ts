@@ -2,8 +2,8 @@
 import { defineNuxtConfig } from 'nuxt/config';
 
 let list = ['/', '/songs_list/1'];
-let response = await fetch('https://test.songs.titovtima.ru/api/v1/songs/info');
-// let response = await fetch('https://songs.titovtima.ru/api/v1/songs/info');
+// let response = await fetch('https://test.songs.titovtima.ru/api/v1/songs/info');
+let response = await fetch('https://songs.titovtima.ru/api/v1/songs/info');
 let songsData = await response.json();
 for (let song of songsData.list) {
   list.push('/song/' + song.id);
@@ -59,15 +59,15 @@ export default defineNuxtConfig({
             cacheName: 'static-assets',
           }
         },
-        {
-          urlPattern: ({ url }) => {
-            return url.pathname.includes('api');
-          },
-          handler: 'StaleWhileRevalidate',
-          options: {
-            cacheName: 'api-responses',
-          }
-        },
+        // {
+        //   urlPattern: ({ url }) => {
+        //     return url.pathname.includes('api');
+        //   },
+        //   handler: 'StaleWhileRevalidate',
+        //   options: {
+        //     cacheName: 'api-responses',
+        //   }
+        // },
         // {
         //   urlPattern: ({request}) => {
         //     return request.method === 'GET'
