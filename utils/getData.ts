@@ -69,8 +69,8 @@ export const emptySongsList = {
     list: []
 };
 
-const songsData: Ref<Map<number, Song>> = ref(new Map());
-const listsData: Ref<Map<number, SongsList>> = ref(new Map());
+export const songsData: Ref<Map<number, Song>> = ref(new Map());
+export const listsData: Ref<Map<number, SongsList>> = ref(new Map());
 
 if (import.meta.client) {
     let storageSongsDataString = localStorage.getItem('songsData');

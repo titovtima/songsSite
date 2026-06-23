@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0]
+
+Date: 2026-06-23
+
+* Add service worker for offline work.
+
+Frontend updated.
+
 ## [1.1.3]
 
 Date: 2026-01-06
