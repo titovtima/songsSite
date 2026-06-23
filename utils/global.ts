@@ -1,5 +1,6 @@
 import musicTheory from '@titovtima/music-theory';
 const { getCircleKeys, chordsTextToString, transposeChordsText, changeChordsTextNotation, chordsTextFromPlainText } = musicTheory;
+import { songsData } from './getData';
 
 export function clone(object: any): any {
     if (typeof object != 'object') 
@@ -134,6 +135,34 @@ export function listToNumber(list: number[], base: number): number | null {
     result += list[i];
   }
   return result;
+}
+
+export const localStoragePrecachedStatusKey = 'precachedPages';
+export function precachePages(showAlert: boolean = false) {
+    if (navigator.serviceWorker.controller?.state == 'activated') {
+        console.log('precaching');
+        let list = ['/', '/songs_list/1'];
+        for (let song of songsData.value.values()) {
+            list.push('/song/' + song.id);
+        }
+        let success = false;
+        let promises = [];
+        for (let addr of list) {
+            promises.push(fetch(addr).then(() => { success = true; }).catch(() => {}));
+        }
+        Promise.all(promises).then(() => {
+            if (success) {
+                localStorage.setItem(localStoragePrecachedStatusKey, new Date().getTime().toString());
+                if (showAlert) {
+                    alert('Кэш обновлён');
+                }
+            } else if (showAlert) {
+                alert('Ошибка обновления');
+            }
+        });
+    } else if (showAlert) {
+        alert('Служба кэширования не запущена');
+    }
 }
 
 export function getHost(): string {

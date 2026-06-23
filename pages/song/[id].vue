@@ -118,7 +118,6 @@ function setLang(list = langList.value) {
   }
 }
 const currentLang: Ref<string | null> = ref(null);
-
 const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
 if (!view.value)
   view.value = 'Text';
@@ -173,23 +172,23 @@ if (songId == 'new') {
     readers: [],
   };
 } else {
-  try {
-    let [data, loadPromise] = getSongData(Number(songId));
-    await loadPromise;
-    songData.value = data.value;
-    if (view.value == 'ChordsText' && chordsTextParts.value.length == 0)
-      view.value = 'Text';
-    if (view.value == 'Chords' && chordsParts.value.length == 0)
-      view.value = 'Text';
-  } catch (e) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Песня не найдена'
-    });
-  }
+  let [data, loadPromise] = getSongData(Number(songId));
+  songData.value = data.value;
+  if (view.value == 'ChordsText' && chordsTextParts.value.length == 0)
+    view.value = 'Text';
+  if (view.value == 'Chords' && chordsParts.value.length == 0)
+    view.value = 'Text';
   songData.value.performances.sort((p1: any, p2: any) => p1.ord - p2.ord);
   songData.value.parts.sort((p1: any, p2: any) => p1.ord - p2.ord);
 
+  loadPromise.catch(e => {
+    if (e.status == 404 || e.status == 403) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Песня не найдена'
+      });
+    }
+  });
   apiRequests.getSongRights(Number(songId))
     .then(response => {
       songRights.value = response;

@@ -1,5 +1,4 @@
 <template>
-  <YandexMetrika />
   <div ref="scrollDiv" style="overflow-y: auto; height: 100%; padding: 20px;">
     <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
@@ -8,6 +7,8 @@
 </template>
 
 <script setup lang="ts">
+import { localStoragePrecachedStatusKey, precachePages } from './utils/global';
+
 const route = useRoute();
 const scrollDiv: Ref<any> = ref(null);
 
@@ -25,6 +26,12 @@ onMounted(() => {
   watchScroll();
 
   document.body.style.height = '100dvh';
+
+  let status = localStorage.getItem(localStoragePrecachedStatusKey);
+  console.log('precache pages status', status);
+  if (status == null || new Date().getTime() - Number(status) >= 1000 * 60 * 60 * 24 * 10) {
+    precachePages(false);
+  }
 });
 
 function watchScroll() {
