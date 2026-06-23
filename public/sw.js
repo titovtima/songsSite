@@ -1,7 +1,5 @@
 const CACHE = 'all-cache-v2';
 
-// let oldCaches = ['workbox-precache-v2-https://test.songs.titovtima.ru/', 'static-assets', 'api-responses'];
-
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) => {
@@ -18,7 +16,6 @@ async function deleteOldCache() {
 
   const deletePromises = cacheNames.map(cacheName => {
     if (cacheName != CACHE) {
-      localStorage.removeItem('precachedPages');
       console.log('Deleting old cache:', cacheName);
       return caches.delete(cacheName);
     }
@@ -34,30 +31,6 @@ self.addEventListener('activate', (event) => {
     }
   );
 });
-
-function update(request) {
-  // console.log('SW: update start');
-  return caches.open(CACHE).then((cache) =>
-    fetch(request).then((response) =>
-      cache.put(request, response.clone()).then(() => response)
-    )
-  );
-}
-
-function refresh(response) {
-  // console.log('SW: refresh start');
-  response.json().then(res => console.log('json', res));
-  return self.clients.matchAll().then((clients) => {
-    clients.forEach((client) => {
-      const message = {
-        type: 'refresh',
-        url: response.url,
-        eTag: response.headers.get('ETag')
-      };
-      client.postMessage(JSON.stringify(message));
-    });
-  });
-}
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
@@ -89,7 +62,6 @@ self.addEventListener('fetch', (event) => {
 
       if (cachedResponse) {
         // console.log('SW: Found in cache:', url.pathname);
-        // update(event.request).then(refresh);
         return cachedResponse;
       }
 
@@ -122,6 +94,4 @@ self.addEventListener('fetch', (event) => {
       }
     })()
   );
-
-  // event.waitUntil(update(event.request).then(refresh));
 });

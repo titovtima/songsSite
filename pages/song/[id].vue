@@ -74,8 +74,6 @@
 </template>
 
 <script setup lang="ts">
-console.log('start');
-
 import musicTheory from '@titovtima/music-theory';
 const { musicTextFromPlainText } = musicTheory;
 import SelectList from "~/components/SelectList.vue";
@@ -120,7 +118,6 @@ function setLang(list = langList.value) {
   }
 }
 const currentLang: Ref<string | null> = ref(null);
-console.log('1');
 const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
 if (!view.value)
   view.value = 'Text';
@@ -140,7 +137,7 @@ watch(view, () => {
     setLang();
   }
 })
-console.log(2);
+
 const editMode: Ref<boolean> = useState('editMode');
 if (route.query['edit']) {
   watch(userData, () => {
@@ -159,7 +156,6 @@ watch(shiftOriginalKey, (shift: any) => {
   })
 });
 
-console.log('before');
 if (songId == 'new') {
   try {
     await apiRequests.checkAuthorized();
@@ -198,7 +194,6 @@ if (songId == 'new') {
       songRights.value = response;
     }).catch(() => {});
 }
-console.log('after');
 
 useHead({title: songData.value.name});
 
@@ -219,7 +214,6 @@ watch(editMode, () => {
 
 const extraText: any = ref(null);
 onMounted(() => {
-  console.log('mounted');
   (useState('mainScrollDiv').value as any).scrollTop = 0;
   document.cookie = "view=ChordsText; path=/song/; max-age=0";
   textTypeButton.value.onclick = () => {
