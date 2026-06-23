@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { songsData } from './utils/getData';
+import { localStoragePrecachedStatusKey, precachePages } from './utils/global';
 
 const route = useRoute();
 const scrollDiv: Ref<any> = ref(null);
@@ -20,7 +20,6 @@ watchEffect(() => {
 useHead({link: [{rel: 'manifest', href: '/manifest.json'}]})
 
 const showSettingsModal = ref(false);
-const localStoragePrecachedStatusKey = 'precachedPages';
 
 onMounted(() => {
   useState('mainScrollDiv').value = scrollDiv.value;
@@ -30,23 +29,8 @@ onMounted(() => {
 
   let status = localStorage.getItem(localStoragePrecachedStatusKey);
   console.log('precache pages status', status);
-  if (navigator.serviceWorker.controller?.state == 'activated' && 
-      (status == null || new Date().getTime() - Number(status) >= 1000 * 60 * 60 * 24 * 10)) {
-    console.log('precaching');
-    let list = ['/', '/songs_list/1'];
-    for (let song of songsData.value.values()) {
-      list.push('/song/' + song.id);
-    }
-    let success = false;
-    for (let addr of list) {
-      try {
-        fetch(addr);
-        if (!success) {
-          success = true;
-          localStorage.setItem(localStoragePrecachedStatusKey, new Date().getTime().toString());
-        }
-      } catch {}
-    }
+  if (status == null || new Date().getTime() - Number(status) >= 1000 * 60 * 60 * 24 * 10) {
+    precachePages(false);
   }
 });
 

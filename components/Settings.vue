@@ -28,12 +28,17 @@
       <div v-if="loggedIn" style="line-height: inherit;">{{ userData.username }}</div>
       <div v-else style="line-height: inherit;">Войти в аккаунт</div>
     </div>
+    <div style="background-color: #e5e7eb; padding: 0 5px; height: 75px; line-height: 75px;
+          overflow-x: hidden; overflow-y: auto; white-space: nowrap; cursor: pointer;"
+          @click="precachePages(true)">
+      Обновить оффлайн-кэш
+    </div>
   </ModalWindow>
   <AuthInfo v-model:show="showAuthInfo" :user-data="userData"/>
 </template>
 
 <script setup lang="ts">
-import { getSettings, userData } from '~/utils/global';
+import { getSettings, precachePages, userData } from '~/utils/global';
 
 const changeFontSize: any = ref(null);
 const modal: any = ref(null);
