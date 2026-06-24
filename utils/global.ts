@@ -139,7 +139,7 @@ export function listToNumber(list: number[], base: number): number | null {
 
 export const localStoragePrecachedStatusKey = 'precachedPages';
 export function precachePages(showAlert: boolean = false) {
-    if (navigator.serviceWorker.controller?.state == 'activated') {
+    if (navigator?.serviceWorker?.controller?.state == 'activated') {
         console.log('precaching');
         let list = ['/', '/songs_list/1'];
         for (let song of songsData.value.values()) {
