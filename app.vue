@@ -1,4 +1,5 @@
 <template>
+  <YandexMetrika />
   <div ref="scrollDiv" style="overflow-y: auto; height: 100%; padding: 20px;">
     <Navbar @click-settings="showSettingsModal = true"/>
     <NuxtPage />
