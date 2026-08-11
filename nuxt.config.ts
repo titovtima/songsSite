@@ -14,7 +14,12 @@ export default defineNuxtConfig({
   
   modules: [
     '@nuxtjs/device',
+    'nuxt-gtag',
   ],
+
+  gtag: {
+    id: 'G-4SJQ08K50R'
+  },
 
   devServer: {
     host: '0.0.0.0',
