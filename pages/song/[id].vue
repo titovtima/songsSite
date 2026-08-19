@@ -413,6 +413,18 @@ function processSavingData() {
     }
   }
 }
+
+onMounted(() => {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    const { type, payload } = event.data;
+
+    if (type == 'UPDATE_SONG_DATA') {
+      if (payload.id == songId) {
+        songData.value = payload;
+      }
+    }
+  });
+})
 </script>
 
 <style scoped>

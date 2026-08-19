@@ -23,6 +23,14 @@ async function deleteOldCache() {
   await Promise.all(deletePromises);
 }
 
+async function sendMessageToBrowser(data) {
+  const clients = await self.clients.matchAll();
+  
+  clients.forEach(client => {
+    client.postMessage(data);
+  });
+}
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     async () => {
@@ -53,11 +61,18 @@ self.addEventListener('fetch', (event) => {
           let cache = await caches.open(CACHE);
           // console.log('SW: Putting in cache', clone);
           await cache.put(new URL(request.url), clone);
+
+          if (request.url.includes('api/v1/song/') && !request.url.includes('rights')) {
+            console.log('networkResponse', networkResponse);
+            
+            networkResponse.json().then(response => {
+              console.log('response', response);
+              sendMessageToBrowser({type: 'UPDATE_SONG_DATA', payload: response});
+            });
+          }
         }
 
         return networkResponse;
-      }).catch(error => {
-        // console.log('SW: network request failed', request.url, error);
       });
 
       if (cachedResponse) {
