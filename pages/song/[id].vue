@@ -411,6 +411,9 @@ function processSavingData() {
     if (part.type == 'Chords' || part.type == 'ChordsText') {
       part.data = musicTextFromPlainText(part.data);
     }
+    if (part.type == 'Text') {
+      part.data = part.data.trim().replace(/  +/g, ' ');
+    }
   }
 }
 
