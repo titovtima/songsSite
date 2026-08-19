@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1]
+
+Date: 2026-08-19
+
+* Remove duplicate spaces in text parts on save.
+* Update song data when service worker received response from network.
+
+Frontend updated.
+
 ## [1.2.0]
 
 Date: 2026-06-23
